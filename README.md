@@ -1,6 +1,6 @@
 # GoatBrote²
 
-A Discord bot that does things and is poorly coded, please don't use it if you want to stay sane
+A Discord bot that does things and is poorly coded, please don't use it if you want to stay sane.
 
 ## You need
 
