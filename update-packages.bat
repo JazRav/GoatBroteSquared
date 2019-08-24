@@ -1,7 +1,11 @@
 @echo off
-echo Getting Discord Go
+echo Setting Go Paths to current folder temporary
+set GOPATH=%cd%
+set GOBIN=%cd%\bin
+echo Updating Discord Go
 go get github.com/bwmarrin/discordgo
-echo Getting Logrus
+echo Updating Logrus
 go get github.com/Sirupsen/logrus
-echo Getting Go-ini
+echo Updating Go-ini
 go get github.com/go-ini/ini
+echo Done, you can now close this
