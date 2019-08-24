@@ -21,7 +21,7 @@ If you want just the source code added to your **normal** Go
 
 If you want to work with the way I set it up *weirdly*
 
-`github.com/DrBrobot/GoatBroteSquared/`
+`go get github.com/DrBrobot/GoatBroteSquared/`
 
 You can update your packages if you do it my way with the batch file
 
