@@ -17,7 +17,7 @@ Go Ini
 
 ###### Download a binary
 
-Go to releases up top and download the latest, as of right now that is verison: `Will do this later`
+Go to releases up top and download the latest
 
 ###### Normal source code way
 
