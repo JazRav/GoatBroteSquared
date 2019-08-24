@@ -16,6 +16,7 @@ config/bot.ini
 config/bot_*.ini
 atom.bat
 goatbrote
+startdevbot.bat
 
 #dir
 bin/
