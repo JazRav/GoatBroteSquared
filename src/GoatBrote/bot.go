@@ -66,6 +66,12 @@ func main() {
 		log.Print("INI ERROR: logALL not set to BOOL value, setting false")
 		dankmemes = false
 	}
+
+	e6Sample, Err = cfg.Section("bot").Key("e621Sample").Bool()
+	if Err != nil {
+		log.Print("INI ERROR: e621Sample not set to BOOL value, setting false")
+		e6Sample = true
+	}
 	//attempts to start a discord session
 	dg, err := discordgo.New("Bot " + botToken)
 	if err != nil {

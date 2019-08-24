@@ -23,5 +23,7 @@ var (
 
 	guildID []string
 
+	e6Sample bool
+
 	commands = make(map[string]command)
 )

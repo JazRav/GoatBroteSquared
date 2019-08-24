@@ -52,13 +52,18 @@ func cmdFurTrash(message []string, s *discordgo.Session, m *discordgo.MessageCre
 			Author: &discordgo.MessageEmbedAuthor{
 				URL:     eStuff.Page,
 				Name:    e6ORe9,
-				IconURL: "https://vgy.me/ISxrpP.png",
+				IconURL: "https://i.imgur.com/dbKpPIs.png",
 			},
-			Image:     &discordgo.MessageEmbedImage{},
+			Image: &discordgo.MessageEmbedImage{
+				URL: eStuff.URL,
+			},
 			Title:     title,
 			Timestamp: eStuff.TimeStamp,
 		}
 		s.ChannelMessageSendEmbed(m.ChannelID, e621embed)
+		if devMode {
+				//s.ChannelMessageSend(m.ChannelID, "URL of Image:" + eStuff.URL)
+		}
 		return
 	}
 	s.ChannelMessageSend(m.ChannelID, "We found nothing for `"+search+"`\nMake sure names with spaces, like Katia Managan is spelt like `Katia_Managan`")
@@ -81,7 +86,7 @@ func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCr
 			Description: "Artist: bran-draws-things",
 			URL:         "https://twitter.com/Bran_the_Onion/status/1058508849710194689",
 			Image: &discordgo.MessageEmbedImage{
-				URL: "https://static1.e926.net/data/95/d4/95d4aee0a5f799ba79554f8b8815fea3.jpg",
+				URL: "https://i.imgur.com/GkSQFxz.png",
 			},
 			Title: "Source",
 		}
@@ -116,7 +121,7 @@ func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCr
 			Author: &discordgo.MessageEmbedAuthor{
 				URL:     eStuff.Page,
 				Name:    e6ORe9,
-				IconURL: "https://vgy.me/ISxrpP.png",
+				IconURL: "https://i.imgur.com/dbKpPIs.png",
 			},
 			Image: &discordgo.MessageEmbedImage{
 				URL: eStuff.URL,
@@ -125,6 +130,9 @@ func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCr
 			Timestamp: eStuff.TimeStamp,
 		}
 		s.ChannelMessageSendEmbed(m.ChannelID, e621embed)
+		if devMode {
+				//s.ChannelMessageSend(m.ChannelID, "URL of Image:" + eStuff.URL)
+		}
 		return
 	}
 	s.ChannelMessageSend(m.ChannelID, "No "+strings.ToLower(whatBoi)+" found :'(")
@@ -172,6 +180,9 @@ func cmdFurKatia(message []string, s *discordgo.Session, m *discordgo.MessageCre
 			Timestamp: eStuff.TimeStamp,
 		}
 		s.ChannelMessageSendEmbed(m.ChannelID, e621embed)
+		if devMode {
+				//s.ChannelMessageSend(m.ChannelID, "URL of Image:" + eStuff.URL)
+		}
 		return
 	}
 	s.ChannelMessageSend(m.ChannelID, "No waifu found :'(")
@@ -186,7 +197,8 @@ type e621 struct {
 	ID        int      `json:"id"`
 	Artists   []string `json:"artist,omitempty"`
 	Timestamp string   `json:"created_at"`
-	Source    string   `json:source`
+	Source    string   `json:"source"`
+	PreviewURL string   `json:"preview_url"`
 }
 
 //Stolen from arch, use later
@@ -245,9 +257,11 @@ func e621Handler(search string, nsfw bool, blacklist string) (eStuff eImage, err
 	rE621 := e621s[numE621]
 	eStuff.Rating = rE621.Rating
 	//Having some issues with loading of images, using sample instead
-	//eStuff.URL = rE621.URL
-	eStuff.URL = rE621.SampleURL
-	//Makes sure the URL has no spaces
+	if !e6Sample {
+		eStuff.URL = rE621.URL
+	} else {
+		eStuff.URL = rE621.SampleURL
+	}
 	eStuff.URL = strings.Replace(eStuff.URL, " ", "%20", -1)
 	eStuff.Tags = rE621.Tags
 	eStuff.Score = rE621.Score

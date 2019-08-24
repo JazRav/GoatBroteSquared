@@ -17,6 +17,7 @@ func init() {
 	makeCmd("listchans", cmdChanList).owner().add()
 	makeCmd("msgchan", cmdMsgChan).owner().add()
 	makeCmd("dankmemes", cmdMemeToggle).owner().add()
+	makeCmd("e6Sample", cmde621SampleToggle).owner().add()
 	makeCmd("makeinvite", cmdMakeInvite).owner().add()
 
 	//User Commands
@@ -140,6 +141,22 @@ func cmdMemeToggle(message []string, s *discordgo.Session, m *discordgo.MessageC
 		cfg.SaveTo(cfgFile)
 		s.ChannelMessageSend(m.ChannelID, "DANK MEMES DISABLED")
 		log.Println("DANK MEMES DISABLED")
+	}
+}
+
+func cmde621SampleToggle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	if dankmemes == false {
+		dankmemes = true
+		cfg.Section("bot").Key("e621Sample").SetValue("true")
+		cfg.SaveTo(cfgFile)
+		s.ChannelMessageSend(m.ChannelID, "e621/e926 SAMPLE ENABLED")
+		log.Println("e621 SAMPLE ENABLED")
+	} else {
+		dankmemes = false
+		cfg.Section("bot").Key("e621Sample").SetValue("false")
+		cfg.SaveTo(cfgFile)
+		s.ChannelMessageSend(m.ChannelID, "e621/e926 SAMPLE DISABLED")
+		log.Println("e621 SAMPLE DISABLED")
 	}
 }
 
