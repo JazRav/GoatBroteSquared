@@ -16,9 +16,11 @@ Go Ini
 ## How to get this shit
 
 If you want just the source code added to your **normal** Go
+
 `go get github.com/DrBrobot/GoatBroteSquared/src/GoatBrote`
 
 If you want to work with the way I set it up *weirdly*
+
 `github.com/DrBrobot/GoatBroteSquared/`
 
 You can update your packages if you do it my way with the batch file
