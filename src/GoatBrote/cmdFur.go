@@ -217,9 +217,14 @@ func e621Handler(search string, nsfw bool, blacklist string) (eStuff eImage, err
 	var e621s []e621
 	search = strings.Replace(search, " ", ",", -1)
 	rand.Seed(time.Now().UnixNano())
-	eLink := "https://e926.net/post/index.json?tags=" + search + "&limit=320&page="
+	var filter string
+	filter = ""
+	if e6Filter {
+		filter = ",score:>="+e6FilterScore
+	}
+	eLink := "https://e926.net/post/index.json?tags=" + search + filter + "&limit=320&page="
 	if nsfw {
-		eLink = "https://e621.net/post/index.json?tags=" + search + ",-rating:s&limit=320&page="
+		eLink = "https://e621.net/post/index.json?tags=" + search + filter + ",-rating:s&limit=320&page="
 	}
 	rand.Seed(time.Now().UnixNano())
 	//fileGetter(eLink, "temp/e621.json")

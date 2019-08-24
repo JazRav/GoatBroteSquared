@@ -25,5 +25,8 @@ var (
 
 	e6Sample bool
 
+	e6Filter bool
+	e6FilterScore string
+
 	commands = make(map[string]command)
 )

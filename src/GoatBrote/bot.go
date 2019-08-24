@@ -69,8 +69,20 @@ func main() {
 
 	e6Sample, Err = cfg.Section("bot").Key("e621Sample").Bool()
 	if Err != nil {
-		log.Print("INI ERROR: e621Sample not set to BOOL value, setting false")
+		log.Print("INI ERROR: e621Sample not set to BOOL value, setting true")
 		e6Sample = true
+	}
+
+	e6Filter, Err = cfg.Section("bot").Key("e621Filter").Bool()
+	if Err != nil {
+		log.Print("INI ERROR: e621Fitler not set to BOOL value, setting false")
+		e6Filter = false
+	}
+
+	e6FilterScore = cfg.Section("bot").Key("e621FilterScore").String()
+	if e6FilterScore == "" {
+		log.Print("INI ERROR: e621FitlerScore not set, setting to 2")
+		e6FilterScore = "2"
 	}
 	//attempts to start a discord session
 	dg, err := discordgo.New("Bot " + botToken)

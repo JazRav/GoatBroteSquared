@@ -19,6 +19,8 @@ func init() {
 	makeCmd("dankmemes", cmdMemeToggle).owner().add()
 	makeCmd("e6Sample", cmde621SampleToggle).owner().add()
 	makeCmd("makeinvite", cmdMakeInvite).owner().add()
+	makeCmd("e6filter", cmde621FilterToggle).owner().add()
+	makeCmd("e6filterscore", cmde621FilterScore).owner().add()
 
 	//User Commands
 	makeCmd("ver", cmdVersion).helpText("gets version infomation of bot").add()
@@ -145,18 +147,53 @@ func cmdMemeToggle(message []string, s *discordgo.Session, m *discordgo.MessageC
 }
 
 func cmde621SampleToggle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	if dankmemes == false {
-		dankmemes = true
+	if e6Sample == false {
+		e6Sample = true
 		cfg.Section("bot").Key("e621Sample").SetValue("true")
 		cfg.SaveTo(cfgFile)
 		s.ChannelMessageSend(m.ChannelID, "e621/e926 SAMPLE ENABLED")
 		log.Println("e621 SAMPLE ENABLED")
 	} else {
-		dankmemes = false
+		e6Sample = false
 		cfg.Section("bot").Key("e621Sample").SetValue("false")
 		cfg.SaveTo(cfgFile)
 		s.ChannelMessageSend(m.ChannelID, "e621/e926 SAMPLE DISABLED")
 		log.Println("e621 SAMPLE DISABLED")
+	}
+}
+
+func cmde621FilterToggle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	if e6Filter == false {
+		e6Filter = true
+		cfg.Section("bot").Key("e621Filter").SetValue("true")
+		cfg.SaveTo(cfgFile)
+		s.ChannelMessageSend(m.ChannelID, "e621/e926 FILTER ENABLED")
+		log.Println("e621 FILTER ENABLED")
+	} else {
+		e6Filter = false
+		cfg.Section("bot").Key("e621Filter").SetValue("false")
+		cfg.SaveTo(cfgFile)
+		s.ChannelMessageSend(m.ChannelID, "e621/e926 FILTER DISABLED")
+		log.Println("e621 FILTER DISABLED")
+	}
+}
+
+func cmde621FilterScore(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	score := strings.TrimPrefix(m.Content, message[0] + " ")
+	if e6Filter == false {
+		s.ChannelMessageSend(m.ChannelID, "FILTER DISABLED, PLEASE ENABLE FILTER WITH ``" + prefix + "e6filter`")
+		log.Println("e621 FILTER ENABLED")
+	} else {
+		var extraMessage string
+		extraMessage = ""
+		if score == "<e6filterscore"	{
+			score = "2"
+			extraMessage = "NOTHING SET, SETTING "
+		}
+		e6FilterScore = score
+		cfg.Section("bot").Key("e621FilterScore").SetValue(e6FilterScore)
+		s.ChannelMessageSend(m.ChannelID, extraMessage +"FILTER SCORE TO " + e6FilterScore)
+		log.Println("e621 FILTER SCORE SET TO " + e6FilterScore)
 	}
 }
 
