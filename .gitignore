@@ -18,12 +18,14 @@ config/bot_*.ini
 atom.bat
 goatbrote
 startdevbot.bat
+7zip.txt
 
 #dir
 bin/
 temp/
 pkg/
 temp/
+ship/
 src/*
 !src/goatbrote
 !src/goatbrote/*/
