@@ -21,10 +21,10 @@ func init() {
 	makeCmd("makeinvite", cmdMakeInvite).owner().add()
 	makeCmd("e6filter", cmde621FilterToggle).owner().add()
 	makeCmd("e6filterscore", cmde621FilterScore).owner().add()
-
 	//User Commands
 	makeCmd("ver", cmdVersion).helpText("gets version infomation of bot").add()
 	makeCmd("help", cmdHelp).helpText("i dunno what this does").add()
+  makeCmd("vid", cmdGetVideoLink).helpText("Gets video link to the voice channel you are in").add()
 }
 
 func cmdDevModeToggle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -253,4 +253,24 @@ func cmdHelp(message []string, s *discordgo.Session, m *discordgo.MessageCreate)
 		log.Println("Help Embed Error: " + err.Error())
 	}
 
+}
+
+func cmdGetVideoLink(message []string, s *discordgo.Session, m *discordgo.MessageCreate){
+	g, err := s.State.Guild(m.GuildID)
+	if err != nil {
+		s.ChannelMessage(m.ChannelID, "ERROR: " + err.Error())
+	}
+	for _, vs := range g.VoiceStates {
+		if vs.UserID == m.Author.ID {
+			vidembed := &discordgo.MessageEmbed{
+				Color:       0x202053,
+				Author: &discordgo.MessageEmbedAuthor{
+					Name:    "Discord Video",
+				},
+				Title:     "Join " + getNameFromID(vs.ChannelID, s) + "'s video",
+				Description: "https://www.discordapp.com/channels/"+m.GuildID+"/"+vs.ChannelID+"/",
+			}
+			s.ChannelMessageSendEmbed(m.ChannelID, vidembed)
+		}
+	}
 }

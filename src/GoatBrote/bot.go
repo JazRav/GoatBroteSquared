@@ -227,3 +227,13 @@ func fileGetter(url string, file string) (err error) {
 	_, err = io.Copy(mkfile, fileResp.Body)
 	return nil
 }
+
+func getNameFromID(id string, s *discordgo.Session) (name string){
+	chanVar, chanerr :=s.Channel(id)
+	if chanerr != nil {
+		name = "Error: Name Not Found"
+	} else {
+		name = chanVar.Name
+	}
+	return name
+}

@@ -18,6 +18,7 @@ import (
 
 func init() {
 	makeCmd("headpat", cmdPat).helpText("gives random headpats\nadd a number at the end certian pat").add()
+	makeCmd("pat", cmdPat).helpText("gives random headpats\nadd a number at the end certian pat").add()
 }
 
 func cmdPat(command []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -60,6 +61,7 @@ func cmdPat(command []string, s *discordgo.Session, m *discordgo.MessageCreate) 
 			URL: pat,
 		},
 		Title: "From Headp.at",
+		URL: "http://headp.at",
 	}
 	_, errbed := s.ChannelMessageSendEmbed(m.ChannelID, patBed)
 	if devMode && errbed != nil {
