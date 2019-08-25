@@ -20,11 +20,12 @@ func init() {
 	makeCmd("e621", cmdFurTrash).helpText("gives you a e621\\e926 image\ne621 in NSFW channels\ne926 in SFW channels\nput booru tags after command").add()
 	makeCmd("e926", cmdFurTrash).helpText("gives you a e621\\e926 image\ne621 in NSFW channels\ne926 in SFW channels\nput booru tags after command").add()
 	makeCmd("katia", cmdFurKatia).helpText("sends image of best cat\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
+	makeCmd("furid", cmdFurIDLookup).helpText("sends image with the ID provided\ne621 in NSFW channels, e926 in SFW channels").add()
 }
 
 func cmdFurTrash(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	search := strings.TrimPrefix(m.Content, message[0])
-	e621EmbedMessage(search, "", false, "", "", s, m)
+	e621EmbedMessage(search, false, "", false, "", "", s, m)
 }
 
 func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -33,12 +34,20 @@ func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCr
 	if message[0] == prefix+"treeboi" {
 		whatBoi = "TREEBOI"
 	}
-	e621EmbedMessage(search, "Ralsei", true, "NO LEWD " + whatBoi, "1700281", s, m)
+	e621EmbedMessage(search, false, "Ralsei", true, "NO LEWD " + whatBoi, "1700281", s, m)
 }
 
 func cmdFurKatia(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	search := strings.TrimPrefix(m.Content, message[0])
-	e621EmbedMessage(search, "Katia_Managan", false, "", "", s, m)
+	e621EmbedMessage(search, false, "Katia_Managan", false, "", "", s, m)
+}
+
+func cmdFurIDLookup(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	if len(message) >= 2 {
+		e621EmbedMessage(message[1], true, "", false, "", "", s, m)
+	} else {
+		s.ChannelMessageSend(m.ChannelID, "You need to put in an ID")
+	}
 }
 
 type e621 struct {
@@ -64,20 +73,28 @@ type eImage struct {
 	Tags      string
 	Rating    string
 	TimeStamp string
+	ID 				int
 }
 
-func e621Handler(search string, forcesearch string, nsfw bool, blacklist string) (eStuff eImage, err error) {
+func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nolewd bool, blacklist string) (eStuff eImage, err error) {
 	var e621s []e621
 	search = strings.Replace(search, " ", ",", -1)
 	rand.Seed(time.Now().UnixNano())
-	var filter string
-	filter = ""
-	if e6Filter {
-		filter = "score:>="+e6FilterScore
-	}
-	eLink := "https://e926.net/post/index.json?tags=" + filter +","+ search + ","+forcesearch+blacklist+ "&limit=320&page="
-	if nsfw {
-		eLink = "https://e621.net/post/index.json?tags=" + filter +","+ search + ","+forcesearch+blacklist+ ",-cub,-young,-rating:s&limit=320&page="
+	filter := ""
+	eLink := ""
+	if !forceID {
+		if e6Filter {
+			filter = "score:>="+e6FilterScore
+		}
+		eLink = "https://e926.net/post/index.json?tags=" + filter +","+ search + ","+forcesearch+blacklist+ "&limit=320&page="
+		if nsfw && !nolewd {
+			eLink = "https://e621.net/post/index.json?tags=" + filter +","+ search + ","+forcesearch+blacklist+ ",-cub,-young,-rating:s&limit=320&page="
+		}
+	} else {
+			eLink = "https://e926.net/post/index.json?tags="+search+forcesearch+"&limit=320&page="
+			if nsfw {
+				eLink = "https://e621.net/post/index.json?tags="+search+forcesearch+",-cub,-young&limit=320&page="
+			}
 	}
 	log.Println("Json: "+eLink)
 	rand.Seed(time.Now().UnixNano())
@@ -136,16 +153,22 @@ func e621Handler(search string, forcesearch string, nsfw bool, blacklist string)
 	}
 	eStuff.Source = rE621.Source
 	eStuff.TimeStamp = rE621.Timestamp
+	eStuff.ID = rE621.ID
 	return eStuff, err
 }
 
-func e621EmbedMessage(search string, forcesearch string, nolewd bool, nolewdmessage string, nolewdid string, s *discordgo.Session, m *discordgo.MessageCreate){
+func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd bool, nolewdmessage string, nolewdid string, s *discordgo.Session, m *discordgo.MessageCreate){
 	chanInfo, _ := s.Channel(m.ChannelID)
 	if nolewd && chanInfo.NSFW {
 		search = "id:"+nolewdid
 		forcesearch = ""
 	}
-	eStuff, err := e621Handler(search, forcesearch, chanInfo.NSFW, "")
+	forceID := false
+	if idlookup {
+		search = "id:" +search
+		forceID = true
+	}
+	eStuff, err := e621Handler(search, forceID, forcesearch, chanInfo.NSFW, nolewd, "")
 	if err != nil {
 		log.Println("fuck me it broke with error: " + err.Error())
 		s.ChannelMessageSend(m.ChannelID, "fuck me it broke with error: "+err.Error())
@@ -170,7 +193,7 @@ func e621EmbedMessage(search string, forcesearch string, nolewd bool, nolewdmess
 	if eStuff.Page != "" {
 		e621embed := &discordgo.MessageEmbed{
 			Color:       0x0055ff,
-			Description: "Artist: " + eStuff.Artist + "\nRating: " + eStuff.Rating + " Score: " + strconv.Itoa(eStuff.Score),
+			Description: "Artist: " + eStuff.Artist + "\nRating: " + eStuff.Rating + " Score: " + strconv.Itoa(eStuff.Score) + "\nID: " + strconv.Itoa(eStuff.ID),
 			URL:         link,
 			Author: &discordgo.MessageEmbedAuthor{
 				URL:     eStuff.Page,
@@ -189,5 +212,14 @@ func e621EmbedMessage(search string, forcesearch string, nolewd bool, nolewdmess
 		}
 		return
 	}
-	s.ChannelMessageSend(m.ChannelID, "We found nothing for `"+search+"`\nMake sure names with spaces, like Katia Managan is spelt like `Katia_Managan`")
+	if idlookup {
+		nsfwMessage := ""
+		if !chanInfo.NSFW {
+			nsfwMessage = " or if its NSFW, make sure you are in a NSFW channel"
+		}
+		s.ChannelMessageSend(m.ChannelID, "We found nothing for `" + search + "`\nMake sure its an actual ID, and its not blacklisted" + nsfwMessage)
+	} else {
+		s.ChannelMessageSend(m.ChannelID, "We found nothing for `"+search+"`\nMake sure names with spaces, like Katia Managan is spelt like `Katia_Managan`")
+	}
+
 }

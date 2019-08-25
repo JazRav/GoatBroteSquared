@@ -11,7 +11,7 @@ import (
 )
 
 func memesHandler(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	matched, _ := regexp.MatchString("^sans.*fucked.*(mom|mum)$", strings.ToLower(m.Content))
+	matched, _ := regexp.MatchString("^sans.*(fucked|fuck).*(mom|mum|mother)$", strings.ToLower(m.Content))
 	if matched {
 		log.Printf("sans fucked " + m.Author.Username + " mom")
 		img, err := os.Open("images/mom.png")

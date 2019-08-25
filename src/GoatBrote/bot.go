@@ -155,7 +155,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	}
 	if logAll == true {
-		log.Println("GID-CID: " + m.Message.GuildID + "-" + m.Message.ChannelID + "\t" + m.Author.Username + "(" + m.Author.ID + "): \"" + m.Content + "\"")
+		log.Println(getNameFromGID(m.Message.GuildID, s) + " (" + getNameFromSID(m.Message.ChannelID, s) + "): " + m.Author.Username + ": " + m.Content)
 	}
 	//If any bot is the author of the message, ignore.
 	if m.Author.ID == s.State.User.ID || m.Author.Bot {
@@ -228,12 +228,22 @@ func fileGetter(url string, file string) (err error) {
 	return nil
 }
 
-func getNameFromID(id string, s *discordgo.Session) (name string){
+func getNameFromSID(id string, s *discordgo.Session) (name string){
 	chanVar, chanerr :=s.Channel(id)
 	if chanerr != nil {
 		name = "Error: Name Not Found"
 	} else {
 		name = chanVar.Name
+	}
+	return name
+}
+
+func getNameFromGID(id string, s *discordgo.Session) (name string){
+	guildVar, guilderr :=s.Guild(id)
+	if guilderr != nil {
+		name = "Error: Name Not Found"
+	} else {
+		name = guildVar.Name
 	}
 	return name
 }

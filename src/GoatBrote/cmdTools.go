@@ -192,6 +192,7 @@ func cmde621FilterScore(message []string, s *discordgo.Session, m *discordgo.Mes
 		}
 		e6FilterScore = score
 		cfg.Section("bot").Key("e621FilterScore").SetValue(e6FilterScore)
+		cfg.SaveTo(cfgFile)
 		s.ChannelMessageSend(m.ChannelID, extraMessage +"FILTER SCORE TO " + e6FilterScore)
 		log.Println("e621 FILTER SCORE SET TO " + e6FilterScore)
 	}
@@ -267,7 +268,7 @@ func cmdGetVideoLink(message []string, s *discordgo.Session, m *discordgo.Messag
 				Author: &discordgo.MessageEmbedAuthor{
 					Name:    "Discord Video",
 				},
-				Title:     "Join " + getNameFromID(vs.ChannelID, s) + "'s video",
+				Title:     "Join " + getNameFromSID(vs.ChannelID, s) + "'s video",
 				Description: "https://www.discordapp.com/channels/"+m.GuildID+"/"+vs.ChannelID+"/",
 			}
 			s.ChannelMessageSendEmbed(m.ChannelID, vidembed)
