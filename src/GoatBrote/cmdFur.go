@@ -24,49 +24,7 @@ func init() {
 
 func cmdFurTrash(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	search := strings.TrimPrefix(m.Content, message[0])
-	chanInfo, _ := s.Channel(m.ChannelID)
-	eStuff, err := e621Handler(search, chanInfo.NSFW, "")
-	if err != nil {
-		log.Println("fuck me it broke with error: " + err.Error())
-		s.ChannelMessageSend(m.ChannelID, "fuck me it broke with error: "+err.Error())
-		return
-	}
-	var link string
-	var title string
-	e6ORe9 := "e926"
-	if chanInfo.NSFW {
-		e6ORe9 = "e621"
-	}
-	if eStuff.Source != "" {
-		link = eStuff.Source
-		title = "Source"
-	} else {
-		link = eStuff.Page
-		title = ""
-	}
-	if eStuff.Page != "" {
-		e621embed := &discordgo.MessageEmbed{
-			Color:       0x0055ff,
-			Description: "Artist: " + eStuff.Artist + "\nRating: " + eStuff.Rating + " Score: " + strconv.Itoa(eStuff.Score),
-			URL:         link,
-			Author: &discordgo.MessageEmbedAuthor{
-				URL:     eStuff.Page,
-				Name:    e6ORe9,
-				IconURL: "https://i.imgur.com/dbKpPIs.png",
-			},
-			Image: &discordgo.MessageEmbedImage{
-				URL: eStuff.URL,
-			},
-			Title:     title,
-			Timestamp: eStuff.TimeStamp,
-		}
-		s.ChannelMessageSendEmbed(m.ChannelID, e621embed)
-		if devMode {
-				//s.ChannelMessageSend(m.ChannelID, "URL of Image:" + eStuff.URL)
-		}
-		return
-	}
-	s.ChannelMessageSend(m.ChannelID, "We found nothing for `"+search+"`\nMake sure names with spaces, like Katia Managan is spelt like `Katia_Managan`")
+	e621EmbedMessage(search, "", false, "", "", s, m)
 }
 
 func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -75,117 +33,12 @@ func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCr
 	if message[0] == prefix+"treeboi" {
 		whatBoi = "TREEBOI"
 	}
-	//https://static1.e926.net/data/95/d4/95d4aee0a5f799ba79554f8b8815fea3.jpg
-	chanInfo, _ := s.Channel(m.ChannelID)
-	//LEWD PROTECTION
-	if chanInfo.NSFW {
-		s.ChannelMessageSend(m.ChannelID, "You are in a NSFW channel, DO NOT LEWD THE "+whatBoi)
-		noLewdembed := &discordgo.MessageEmbed{
-			Author:      &discordgo.MessageEmbedAuthor{},
-			Color:       0xff0000,
-			Description: "Artist: bran-draws-things",
-			URL:         "https://twitter.com/Bran_the_Onion/status/1058508849710194689",
-			Image: &discordgo.MessageEmbedImage{
-				URL: "https://i.imgur.com/GkSQFxz.png",
-			},
-			Title: "Source",
-		}
-		s.ChannelMessageSendEmbed(m.ChannelID, noLewdembed)
-		return
-	}
-	eStuff, err := e621Handler("ralsei "+search, false, "")
-	if err != nil {
-		log.Println("fuck me it broke with error: " + err.Error())
-		s.ChannelMessageSend(m.ChannelID, "fuck me it broke with error: "+err.Error())
-		return
-	}
-	var e6ORe9 string
-	var link string
-	var title string
-	e6ORe9 = "e926"
-	if chanInfo.NSFW {
-		e6ORe9 = "How you get this, you fucking monster?"
-	}
-	if eStuff.Source != "" {
-		link = eStuff.Source
-		title = "Source"
-	} else {
-		link = eStuff.Page
-		title = ""
-	}
-	if eStuff.Page != "" {
-		e621embed := &discordgo.MessageEmbed{
-			Color:       0x0055ff,
-			Description: "Artist: " + eStuff.Artist + "\nScore: " + strconv.Itoa(eStuff.Score),
-			URL:         link,
-			Author: &discordgo.MessageEmbedAuthor{
-				URL:     eStuff.Page,
-				Name:    e6ORe9,
-				IconURL: "https://i.imgur.com/dbKpPIs.png",
-			},
-			Image: &discordgo.MessageEmbedImage{
-				URL: eStuff.URL,
-			},
-			Title:     title,
-			Timestamp: eStuff.TimeStamp,
-		}
-		s.ChannelMessageSendEmbed(m.ChannelID, e621embed)
-		if devMode {
-				//s.ChannelMessageSend(m.ChannelID, "URL of Image:" + eStuff.URL)
-		}
-		return
-	}
-	s.ChannelMessageSend(m.ChannelID, "No "+strings.ToLower(whatBoi)+" found :'(")
+	e621EmbedMessage(search, "Ralsei", true, "NO LEWD " + whatBoi, "1700281", s, m)
 }
 
 func cmdFurKatia(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	search := strings.TrimPrefix(m.Content, message[0])
-	chanInfo, _ := s.Channel(m.ChannelID)
-	eStuff, err := e621Handler("katia_managan "+search, chanInfo.NSFW, "")
-	if err != nil {
-		log.Println("fuck me it broke with error: " + err.Error())
-		s.ChannelMessageSend(m.ChannelID, "fuck me it broke with error: "+err.Error())
-		return
-	}
-	var e6ORe9 string
-	var link string
-	var title string
-	e6ORe9 = "e926"
-	if chanInfo.NSFW {
-		e6ORe9 = "e621"
-	}
-	if eStuff.Source != "" {
-		link = eStuff.Source
-		title = "Source"
-	} else {
-		link = eStuff.Page
-		if chanInfo.NSFW {
-			title = ""
-		}
-	}
-	if eStuff.Page != "" {
-		e621embed := &discordgo.MessageEmbed{
-			Color:       0x0055ff,
-			Description: "Artist: " + eStuff.Artist + "\nRating: " + eStuff.Rating + " Score: " + strconv.Itoa(eStuff.Score),
-			URL:         link,
-			Author: &discordgo.MessageEmbedAuthor{
-				URL:     eStuff.Page,
-				Name:    e6ORe9,
-				IconURL: "https://vgy.me/ISxrpP.png",
-			},
-			Image: &discordgo.MessageEmbedImage{
-				URL: eStuff.URL,
-			},
-			Title:     title,
-			Timestamp: eStuff.TimeStamp,
-		}
-		s.ChannelMessageSendEmbed(m.ChannelID, e621embed)
-		if devMode {
-				//s.ChannelMessageSend(m.ChannelID, "URL of Image:" + eStuff.URL)
-		}
-		return
-	}
-	s.ChannelMessageSend(m.ChannelID, "No waifu found :'(")
+	e621EmbedMessage(search, "Katia_Managan", false, "", "", s, m)
 }
 
 type e621 struct {
@@ -213,7 +66,7 @@ type eImage struct {
 	TimeStamp string
 }
 
-func e621Handler(search string, nsfw bool, blacklist string) (eStuff eImage, err error) {
+func e621Handler(search string, forcesearch string, nsfw bool, blacklist string) (eStuff eImage, err error) {
 	var e621s []e621
 	search = strings.Replace(search, " ", ",", -1)
 	rand.Seed(time.Now().UnixNano())
@@ -222,10 +75,11 @@ func e621Handler(search string, nsfw bool, blacklist string) (eStuff eImage, err
 	if e6Filter {
 		filter = "score:>="+e6FilterScore
 	}
-	eLink := "https://e926.net/post/index.json?tags=" + filter +","+ search + "&limit=320&page="
+	eLink := "https://e926.net/post/index.json?tags=" + filter +","+ search + ","+forcesearch+blacklist+ "&limit=320&page="
 	if nsfw {
-		eLink = "https://e621.net/post/index.json?tags=" + filter +","+ search + ",-rating:s&limit=320&page="
+		eLink = "https://e621.net/post/index.json?tags=" + filter +","+ search + ","+forcesearch+blacklist+ ",-cub,-young,-rating:s&limit=320&page="
 	}
+	log.Println("Json: "+eLink)
 	rand.Seed(time.Now().UnixNano())
 	//fileGetter(eLink, "temp/e621.json")
 	client := &http.Client{}
@@ -283,4 +137,57 @@ func e621Handler(search string, nsfw bool, blacklist string) (eStuff eImage, err
 	eStuff.Source = rE621.Source
 	eStuff.TimeStamp = rE621.Timestamp
 	return eStuff, err
+}
+
+func e621EmbedMessage(search string, forcesearch string, nolewd bool, nolewdmessage string, nolewdid string, s *discordgo.Session, m *discordgo.MessageCreate){
+	chanInfo, _ := s.Channel(m.ChannelID)
+	if nolewd && chanInfo.NSFW {
+		search = "id:"+nolewdid
+		forcesearch = ""
+	}
+	eStuff, err := e621Handler(search, forcesearch, chanInfo.NSFW, "")
+	if err != nil {
+		log.Println("fuck me it broke with error: " + err.Error())
+		s.ChannelMessageSend(m.ChannelID, "fuck me it broke with error: "+err.Error())
+		return
+	}
+	var link string
+	var title string
+	e6ORe9 := "e926"
+	if chanInfo.NSFW {
+		e6ORe9 = "e621"
+		if nolewd {
+			e6ORe9 = nolewdmessage
+		}
+	}
+	if eStuff.Source != "" {
+		link = eStuff.Source
+		title = "Source"
+	} else {
+		link = eStuff.Page
+		title = ""
+	}
+	if eStuff.Page != "" {
+		e621embed := &discordgo.MessageEmbed{
+			Color:       0x0055ff,
+			Description: "Artist: " + eStuff.Artist + "\nRating: " + eStuff.Rating + " Score: " + strconv.Itoa(eStuff.Score),
+			URL:         link,
+			Author: &discordgo.MessageEmbedAuthor{
+				URL:     eStuff.Page,
+				Name:    e6ORe9,
+				IconURL: "https://i.imgur.com/dbKpPIs.png",
+			},
+			Image: &discordgo.MessageEmbedImage{
+				URL: eStuff.URL,
+			},
+			Title:     title,
+			Timestamp: eStuff.TimeStamp,
+		}
+		s.ChannelMessageSendEmbed(m.ChannelID, e621embed)
+		if devMode {
+				//s.ChannelMessageSend(m.ChannelID, "URL of Image:" + eStuff.URL)
+		}
+		return
+	}
+	s.ChannelMessageSend(m.ChannelID, "We found nothing for `"+search+"`\nMake sure names with spaces, like Katia Managan is spelt like `Katia_Managan`")
 }
