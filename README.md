@@ -1,5 +1,6 @@
 # GoatBrote²
 
+
 A Discord bot that does things and is poorly coded, please don't use it if you want to stay sane.
 
 ## You need
@@ -46,3 +47,4 @@ Build.bat will Build and Run the bot with the bot_dev.ini, which you can make yo
 ![alt text][ToddHoward]
 
 [ToddHoward]: https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/ToddHoward2010sm.jpg/220px-ToddHoward2010sm.jpg "Todd 'Godd' Howard"
+
