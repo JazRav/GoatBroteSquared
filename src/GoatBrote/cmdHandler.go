@@ -21,7 +21,7 @@ type command struct {
 }
 
 func cmdhandle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	cmd := strings.TrimPrefix(message[0], prefix)
+	cmd := strings.TrimPrefix(message[0], globalPrefix)
 	cmd = strings.ToLower(cmd)
 
 	if command, ok := commands[cmd]; ok && (cmd == strings.ToLower(command.Name)) {

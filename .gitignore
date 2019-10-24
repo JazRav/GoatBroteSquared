@@ -15,6 +15,7 @@
 #files
 config/bot.ini
 config/bot_*.ini
+config/*_server/
 atom.bat
 goatbrote
 startdevbot.bat

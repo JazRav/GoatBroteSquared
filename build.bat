@@ -16,7 +16,7 @@ go get goatbrote
 echo %githash%
 echo %TIME: =0%
 set timetime=%TIME: =0%
-go install -ldflags "-X main.Version=%version%-windows -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" goatbrote
+go install -ldflags "-X main.Version=%version% -X main.BinaryOS=%GOOS% -X main.BinaryArch=%GOARCH% -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" goatbrote
 echo copying goatbrote
 cmd /c echo F | xcopy bin\goatbrote.exe goatbrote.exe
 goatbrote -c bot_dev.ini

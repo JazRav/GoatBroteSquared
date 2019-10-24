@@ -31,6 +31,12 @@ func cmdFurTrash(message []string, s *discordgo.Session, m *discordgo.MessageCre
 func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	search := strings.TrimPrefix(m.Content, message[0])
 	whatBoi := "GOAT"
+
+	prefix := globalPrefix
+	if !useGlobalPrefix {
+		prefix = "" //either do this, or make this less shit when per-server-prefix is added
+	}
+
 	if message[0] == prefix+"treeboi" {
 		whatBoi = "TREEBOI"
 	}
@@ -104,7 +110,7 @@ func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 	if err != nil {
 		return eStuff, err
 	}
-	req.Header.Set("User-Agent", "GoatBroteSquared_DiscordGo_Bot/0.1")
+	req.Header.Set("User-Agent", "GoatBroteSquared_DiscordGo_Bot/"+Version)
 	resp, err := client.Do(req)
 	if err != nil {
 		return eStuff, err

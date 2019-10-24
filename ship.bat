@@ -17,7 +17,7 @@ echo Compiling %GOOS%_%GOARCH%
 @echo on
 go get goatbrote
 set timetime=%TIME: =0%
-go install -ldflags "-X main.Version=%version%-%GOOS%-%GOARCH% -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" goatbrote
+go install -ldflags "-X main.Version=%version% -X main.BinaryOS=%GOOS% -X main.BinaryArch=%GOARCH% -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" goatbrote
 @echo off
 cmd /c echo F | xcopy "bin\goatbrote.exe" "ship\%GOOS%-%GOARCH%\goatbrote.exe"/Y
 cmd /c echo F | xcopy "config\example_bot.ini" "ship\%GOOS%-%GOARCH%\config\example_bot.ini" /Y
@@ -41,7 +41,7 @@ echo Compiling %GOOS%_%GOARCH%
 @echo on
 go get goatbrote
 set timetime=%TIME: =0%
-go install -ldflags "-X main.Version=%version%-%GOOS%-%GOARCH% -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" goatbrote
+go install -ldflags "-X main.Version=%version% -X main.BinaryOS=%GOOS% -X main.BinaryArch=%GOARCH% -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" goatbrote
 @echo off
 cmd /c echo F | xcopy "bin\%GOOS%_%GOARCH%\goatbrote.exe" "ship\%GOOS%-%GOARCH%\goatbrote.exe" /Y
 cmd /c echo F | xcopy "config\example_bot.ini" "ship\%GOOS%-%GOARCH%\config\example_bot.ini" /Y
@@ -66,7 +66,7 @@ echo Compiling %GOOS%_%GOARCH%
 @echo on
 go get goatbrote
 set timetime=%TIME: =0%
-go install -ldflags "-X main.Version=%version%-%GOOS%-%GOARCH% -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" goatbrote
+go install -ldflags "-X main.Version=%version% -X main.BinaryOS=%GOOS% -X main.BinaryArch=%GOARCH% -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" goatbrote
 @echo off
 cmd /c echo F | xcopy "bin\%GOOS%_%GOARCH%\goatbrote" "ship\%GOOS%-%GOARCH%\goatbrote" /Y
 cmd /c echo F | xcopy "config\example_bot.ini" "ship\%GOOS%-%GOARCH%\config\example_bot.ini" /Y
@@ -89,7 +89,7 @@ echo Compiling %GOOS%_%GOARCH%
 @echo on
 go get goatbrote
 set timetime=%TIME: =0%
-go install -ldflags "-X main.Version=%version%-%GOOS%-%GOARCH% -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" goatbrote
+go install -ldflags "-X main.Version=%version% -X main.BinaryOS=%GOOS% -X main.BinaryArch=%GOARCH% -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" goatbrote
 @echo off
 cmd /c echo F | xcopy "bin\%GOOS%_%GOARCH%\goatbrote" "ship\%GOOS%-%GOARCH%\goatbrote" /Y
 cmd /c echo F | xcopy "config\example_bot.ini" "ship\%GOOS%-%GOARCH%\config\example_bot.ini" /Y
@@ -113,12 +113,12 @@ echo Compiling %GOOS%_%GOARCH%
 @echo on
 go get goatbrote
 set timetime=%TIME: =0%
-go install -ldflags "-X main.Version=%version%-RPi -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" goatbrote
+go install -ldflags "-X main.Version=%version% -X main.BinaryOS=RPi-%GOOS% -X main.BinaryArch=%GOARCH% -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" goatbrote
 @echo off
 cmd /c echo F | xcopy "bin\%GOOS%_%GOARCH%\goatbrote" "ship\%GOOS%-%GOARCH%\goatbrote" /Y
 cmd /c echo F | xcopy "config\example_bot.ini" "ship\%GOOS%-%GOARCH%\config\example_bot.ini" /Y
 cmd /c echo F | xcopy "README.md" "ship\%GOOS%-%GOARCH%\README.md" /Y
 cmd /c echo F | xcopy "images" "ship\%GOOS%-%GOARCH%\images\" /Y
 cd "ship\%GOOS%-%GOARCH%\"
-"C:\Program Files\7-Zip\7z.exe" a "..\GoatBroteSquared-%version%-RPi.zip" "*"
+"C:\Program Files\7-Zip\7z.exe" a "..\GoatBroteSquared-%version%-RPi-%GOOS%-%GOARCH%.zip" "*"
 cd %GOPATH%

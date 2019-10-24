@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"os/exec"
 	"strconv"
 	"strings"
 	"syscall"
@@ -92,6 +93,13 @@ func main() {
 	}
 
 	//Adds handlers
+	HostNameCmd := exec.Command("hostname")
+	HostNameSTD, HostNameErr := HostNameCmd.Output()
+	if HostNameErr != nil {
+		HostName = "unknown"
+	} else {
+		HostName = string(HostNameSTD)
+	}
 	dg.AddHandler(Ready)
 	dg.AddHandler(messageCreate)
 	dg.AddHandler(guildCreate)
@@ -147,11 +155,11 @@ func guildCreate(s *discordgo.Session, event *discordgo.GuildCreate) {
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	//Logs messages
-	prefix = cfg.Section("bot").Key("prefix").String()
-	if prefix == "" || prefix == "\\" {
-		cfg.Section("bot").Key("prefix").SetValue(">")
+	globalPrefix = cfg.Section("bot").Key("globalPrefix").String()
+	if globalPrefix == "" || globalPrefix == "\\" {
+		cfg.Section("bot").Key("globalPrefix").SetValue(">")
 		cfg.SaveTo(cfgFile)
-		log.Printf("prefix was broken, fixed")
+		log.Printf("globalPrefix was broken, fixed")
 
 	}
 	if logAll == true {
@@ -177,7 +185,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	//Sends messages to commands with prefixs
 	message := strings.Fields(m.Content)
 	if m.Content != "" {
-		if strings.HasPrefix(message[0], prefix) {
+		if strings.HasPrefix(message[0], globalPrefix) {
 			cmdhandle(message, s, m)
 		}
 	}
@@ -216,7 +224,7 @@ func fileGetter(url string, file string) (err error) {
 	if err != nil {
 		return err
 	}
-	fileGet.Header.Set("User-Agent", "GoatBroteSquared_DiscordGo_Bot/0.1")
+	fileGet.Header.Set("User-Agent", "GoatBroteSquared_DiscordGo_Bot/"+Version)
 	fileResp, err := client.Do(fileGet)
 	if err != nil {
 		log.Printf("Failed to get some shit")

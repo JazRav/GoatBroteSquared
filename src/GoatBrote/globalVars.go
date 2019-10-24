@@ -4,8 +4,11 @@ import "github.com/go-ini/ini"
 
 var (
 	Version   = "undefined"
+	BinaryOS = "undefiend"
+	BinaryArch = "undefiend"
 	BuildTime = "undefined"
 	GitHash   = "undefined"
+	HostName = "None"
 
 	botToken string
 	devMode  bool
@@ -18,7 +21,8 @@ var (
 
 	noPat        string
 	noPatMessage string
-	prefix       string
+	useGlobalPrefix bool
+	globalPrefix string
 	dankmemes    bool
 
 	guildID []string
@@ -29,4 +33,7 @@ var (
 	e6FilterScore string
 
 	commands = make(map[string]command)
+
+	selfUpdate bool
+
 )

@@ -181,7 +181,7 @@ func cmde621FilterToggle(message []string, s *discordgo.Session, m *discordgo.Me
 func cmde621FilterScore(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	score := strings.TrimPrefix(m.Content, message[0] + " ")
 	if e6Filter == false {
-		s.ChannelMessageSend(m.ChannelID, "FILTER DISABLED, PLEASE ENABLE FILTER WITH ``" + prefix + "e6filter`")
+		s.ChannelMessageSend(m.ChannelID, "FILTER DISABLED, PLEASE ENABLE FILTER WITH ``" +globalPrefix + "e6filter`")
 		log.Println("e621 FILTER ENABLED")
 	} else {
 		var extraMessage string
@@ -220,7 +220,7 @@ func cmdMakeInvite(message []string, s *discordgo.Session, m *discordgo.MessageC
 }
 
 func cmdVersion(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	s.ChannelMessageSend(m.ChannelID, "Version: "+Version+"\nBuild Time: "+BuildTime+"\nGitHash: "+GitHash)
+	s.ChannelMessageSend(m.ChannelID, "Version: "+Version+"-"+BinaryOS+"-"+BinaryArch+"\nBuild Time: "+BuildTime+"\nGitHash: "+GitHash+"\nHostName: " + HostName)
 }
 
 func cmdHelp(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -233,7 +233,7 @@ func cmdHelp(message []string, s *discordgo.Session, m *discordgo.MessageCreate)
 					Name: "Help",
 				},
 				Description: cmd.Help,
-				Title:       prefix + cmd.Name,
+				Title:      globalPrefix + cmd.Name,
 				//Timestamp:   time.Now().Format(time.RFC3339),
 			})
 		}
@@ -242,7 +242,7 @@ func cmdHelp(message []string, s *discordgo.Session, m *discordgo.MessageCreate)
 	var cmds []string
 	for _, cmd := range commands {
 		if m.Author.ID == ownerID || !cmd.Owner {
-			cmds = append(cmds, prefix+cmd.Name)
+			cmds = append(cmds,globalPrefix+cmd.Name)
 		}
 	}
 	_, err := s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
