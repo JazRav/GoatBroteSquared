@@ -22,6 +22,3 @@ cmd /c echo F | xcopy "bin\%GOOS%_%GOARCH%\goatbrote" "ship\%GOOS%-%GOARCH%\goat
 cmd /c echo F | xcopy "config\example_bot.ini" "ship\%GOOS%-%GOARCH%\config\example_bot.ini" /Y
 cmd /c echo F | xcopy "README.md" "ship\%GOOS%-%GOARCH%\README.md" /Y
 cmd /c echo F | xcopy "images" "ship\%GOOS%-%GOARCH%\images\" /Y
-cd "ship\%GOOS%-%GOARCH%\"
-"C:\Program Files\7-Zip\7z.exe" a "..\GoatBroteSquared-%version%-RPi-%GOOS%-%GOARCH%.zip" "*"
-cd %GOPATH%
