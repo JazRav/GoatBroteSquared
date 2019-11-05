@@ -12,7 +12,7 @@ set /p Version=<version.txt
 echo %Version%
 FOR /F "tokens=* USEBACKQ" %%F IN (`git rev-parse HEAD`) DO ( SET GitHash=%%F )
 echo Deleting old Windows x86-64 build
-del /f /s /q "ship\Win64\"
+del /f /s /q "ship\windows-amd64\"
 echo Compiling %GOOS%_%GOARCH%
 @echo on
 go get goatbrote
@@ -35,8 +35,8 @@ set GOARCH=386
 set GOOS=windows
 set /p Version=<version.txt
 FOR /F "tokens=* USEBACKQ" %%F IN (`git rev-parse HEAD`) DO ( SET GitHash=%%F )
-echo Deleting old Windows x86-64 build
-del /f /s /q "ship\Win32\"
+echo Deleting old Windows x86 build
+del /f /s /q "ship\windows-386\"
 echo Compiling %GOOS%_%GOARCH%
 @echo on
 go get goatbrote
@@ -60,8 +60,8 @@ set GOARCH=amd64
 set GOOS=linux
 set /p Version=<version.txt
 FOR /F "tokens=* USEBACKQ" %%F IN (`git rev-parse HEAD`) DO ( SET GitHash=%%F )
-echo Deleting old Windows x86-64 build
-del /f /s /q "ship\Win32\"
+echo Deleting old Linux x86-64 build
+del /f /s /q "ship\linux-amd64\"
 echo Compiling %GOOS%_%GOARCH%
 @echo on
 go get goatbrote
@@ -83,8 +83,8 @@ set GOARCH=386
 set GOOS=linux
 set /p Version=<version.txt
 FOR /F "tokens=* USEBACKQ" %%F IN (`git rev-parse HEAD`) DO ( SET GitHash=%%F )
-echo Deleting old Windows x86-64 build
-del /f /s /q "ship\Win32\"
+echo Deleting old Linux x86 build
+del /f /s /q "ship\linux-386\"
 echo Compiling %GOOS%_%GOARCH%
 @echo on
 go get goatbrote
@@ -107,8 +107,8 @@ set GOOS=linux
 set GOARM=5
 set /p Version=<version.txt
 FOR /F "tokens=* USEBACKQ" %%F IN (`git rev-parse HEAD`) DO ( SET GitHash=%%F )
-echo Deleting old Windows x86-64 build
-del /f /s /q "ship\Win32\"
+echo Deleting old RPi build
+del /f /s /q "ship\linux-arm\"
 echo Compiling %GOOS%_%GOARCH%
 @echo on
 go get goatbrote

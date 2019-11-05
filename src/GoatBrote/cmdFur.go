@@ -85,6 +85,8 @@ type eImage struct {
 func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nolewd bool, blacklist string) (eStuff eImage, err error) {
 	var e621s []e621
 	search = strings.Replace(search, " ", ",", -1)
+	//cub begone!
+	search = strings.Replace(search, ";", "", -1)
 	rand.Seed(time.Now().UnixNano())
 	filter := ""
 	eLink := ""
