@@ -15,7 +15,7 @@ Go Ini
 `go get github.com/go-ini/ini`
 
 Anaconda (Twitter API)
-`github.com/ChimeraCoder/anaconda`
+`go get github.com/ChimeraCoder/anaconda`
 
 ## How to get this shit
 
