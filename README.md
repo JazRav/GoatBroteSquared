@@ -1,29 +1,14 @@
 # GoatBrote²
 
-
 A Discord bot that does things and is poorly coded, please don't use it if you want to stay sane.
 
-## You need
+# Ways to get this shit
 
-Discord Go
-`go get github.com/bwmarrin/discordgo`
-
-Logrus
-`go get github.com/Sirupsen/logrus`
-
-Go Ini
-`go get github.com/go-ini/ini`
-
-Anaconda (Twitter API)
-`go get github.com/ChimeraCoder/anaconda`
-
-## How to get this shit
-
-###### Download a binary
+## Download a binary
 
 Go to releases up top and download the latest
 
-###### Normal source code way
+## Normal source code way
 
 If you want just the source code added to your **normal** Go
 
@@ -33,9 +18,35 @@ Check the `config` folder in this git for the `example_bot.ini` file, rename it 
 
 Also you need everything in the `images` folder for some commands
 
-Warning, you need to set this up yourself
+And these libraries
 
-###### My weird setup that I use
+###### Discord Go
+`go get github.com/bwmarrin/discordgo`
+
+###### Logrus
+`go get github.com/Sirupsen/logrus`
+
+###### Go Ini
+`go get github.com/go-ini/ini`
+
+Anaconda (Twitter API)
+`go get github.com/ChimeraCoder/anaconda`
+
+**You need set these ldflags**
+
+`main.Version`
+
+`main.BinaryOS`
+
+`main.BinaryArch`
+
+`main.GitHash`
+
+`main.BuildTime`
+
+Check `build dumb.bat` to see how I did it
+
+## My weird setup that I use
 
 If you want to work with the way I set it up *weirdly*
 
@@ -45,7 +56,7 @@ You can update your packages if you do it my way with the batch file
 
 Build.bat will Build and Run the bot with the bot_dev.ini, which you can make your own by checking in `config` for the `example_bot.ini`
 
-###### It Just Works
+# It Just Works
 
 ![alt text][ToddHoward]
 
