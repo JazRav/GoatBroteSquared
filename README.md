@@ -16,9 +16,11 @@ If you want just the source code added to your **normal** Go
 
 Check the `config` folder in this git for the `example_bot.ini` file, rename it to `bot.ini` and change for your info
 
-Also you need everything in the `images` folder for some commands
+Same with `config/twitter` with the file `example_twitter.ini` Rename it anything and make to set it in your `bot.ini` file
 
-And these libraries
+You need everything in the `images` folder for some commands
+
+These libraries
 
 ###### Discord Go
 `go get github.com/bwmarrin/discordgo`
@@ -29,7 +31,7 @@ And these libraries
 ###### Go Ini
 `go get github.com/go-ini/ini`
 
-Anaconda (Twitter API)
+###### Anaconda (Twitter API)
 `go get github.com/ChimeraCoder/anaconda`
 
 **You need set these ldflags**
@@ -44,9 +46,9 @@ Anaconda (Twitter API)
 
 `main.BuildTime`
 
-Check `build dumb.bat` to see how I did it
+Check `build-dumb.bat` to see how I did it
 
-## My weird setup that I use
+## The dumb way™
 
 If you want to work with the way I set it up *weirdly*
 
@@ -54,7 +56,7 @@ If you want to work with the way I set it up *weirdly*
 
 You can update your packages if you do it my way with the batch file
 
-Build.bat will Build and Run the bot with the bot_dev.ini, which you can make your own by checking in `config` for the `example_bot.ini`
+`Build-dumb.bat` will Build and Run the bot with the `bot_dev.ini`, which you can make your own by checking in `config` for the `example_bot.ini`, same with `config/twitter` and `example_twitter.ini`
 
 # It Just Works
 
