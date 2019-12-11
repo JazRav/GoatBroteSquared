@@ -14,6 +14,9 @@ Logrus
 Go Ini
 `go get github.com/go-ini/ini`
 
+Anaconda (Twitter API)
+`github.com/ChimeraCoder/anaconda`
+
 ## How to get this shit
 
 ###### Download a binary
