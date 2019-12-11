@@ -220,7 +220,7 @@ func cmdMakeInvite(message []string, s *discordgo.Session, m *discordgo.MessageC
 }
 
 func cmdVersion(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	s.ChannelMessageSend(m.ChannelID, "Version: "+Version+"-"+BinaryOS+"-"+BinaryArch+"\nBuild Time: "+BuildTime+"\nGitHash: "+GitHash+"\nHostName: " + HostName)
+	s.ChannelMessageSend(m.ChannelID, "Version: "+Version+"-"+BinaryOS+"-"+BinaryArch+"\nBuild Time: "+BuildTime+"\nGitHash: "+GitHash+"\nDiscordGo: "+discordgo.VERSION+"\nHostName: "+HostName)
 }
 
 func cmdHelp(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -268,7 +268,7 @@ func cmdGetVideoLink(message []string, s *discordgo.Session, m *discordgo.Messag
 				Author: &discordgo.MessageEmbedAuthor{
 					Name:    "Discord Video",
 				},
-				Title:     "Join " + getNameFromSID(vs.ChannelID, s) + "'s video",
+				Title:     "Join " + getNameFromCID(vs.ChannelID, s) + "'s video",
 				Description: "https://www.discordapp.com/channels/"+m.GuildID+"/"+vs.ChannelID+"/",
 			}
 			s.ChannelMessageSendEmbed(m.ChannelID, vidembed)

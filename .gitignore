@@ -16,7 +16,10 @@
 config/bot.ini
 config/bot_*.ini
 config/*_server/
+config/twitter/*.ini
+!config/twitter/example_twitter.ini
 atom.bat
+logs/*
 goatbrote
 startdevbot.bat
 7zip.txt
@@ -28,5 +31,6 @@ pkg/
 temp/
 ship/
 src/*
+log/*
 !src/goatbrote
 !src/goatbrote/*/

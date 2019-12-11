@@ -48,7 +48,7 @@ func cmdhandle(message []string, s *discordgo.Session, m *discordgo.MessageCreat
 			command.Exec(message, s, m)
 			return
 		}
-		s.ChannelMessageSend(m.ChannelID, "You don't have the correct permissions to run this!")
+		s.ChannelMessageSend(m.ChannelID, "Goddamn it <@" + m.Author.ID + "> you don't have any rights")
 		return
 	}
 }

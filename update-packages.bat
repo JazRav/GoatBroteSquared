@@ -8,4 +8,6 @@ echo Updating Logrus
 go get github.com/Sirupsen/logrus
 echo Updating Go-ini
 go get github.com/go-ini/ini
+echo Getting some twitter shit
+go get github.com/ChimeraCoder/anaconda
 echo Done, you can now close this

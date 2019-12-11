@@ -21,6 +21,7 @@ go install -ldflags "-X main.Version=%version% -X main.BinaryOS=%GOOS% -X main.B
 @echo off
 cmd /c echo F | xcopy "bin\goatbrote.exe" "ship\%GOOS%-%GOARCH%\goatbrote.exe"/Y
 cmd /c echo F | xcopy "config\example_bot.ini" "ship\%GOOS%-%GOARCH%\config\example_bot.ini" /Y
+cmd /c echo F | xcopy "config\twitter\example_twitter.ini" "ship\%GOOS%-%GOARCH%\config\twitter\example_twitter.ini" /Y
 cmd /c echo F | xcopy "README.md" "ship\%GOOS%-%GOARCH%\README.md" /Y
 cmd /c echo F | xcopy "images" "ship\%GOOS%-%GOARCH%\images\" /Y
 cd "ship\%GOOS%-%GOARCH%\"
@@ -45,6 +46,7 @@ go install -ldflags "-X main.Version=%version% -X main.BinaryOS=%GOOS% -X main.B
 @echo off
 cmd /c echo F | xcopy "bin\%GOOS%_%GOARCH%\goatbrote.exe" "ship\%GOOS%-%GOARCH%\goatbrote.exe" /Y
 cmd /c echo F | xcopy "config\example_bot.ini" "ship\%GOOS%-%GOARCH%\config\example_bot.ini" /Y
+cmd /c echo F | xcopy "config\twitter\example_twitter.ini" "ship\%GOOS%-%GOARCH%\config\twitter\example_twitter.ini" /Y
 cmd /c echo F | xcopy "README.md" "ship\%GOOS%-%GOARCH%\README.md" /Y
 cmd /c echo F | xcopy "images" "ship\%GOOS%-%GOARCH%\images\" /Y
 cd "ship\%GOOS%-%GOARCH%\"
@@ -70,6 +72,7 @@ go install -ldflags "-X main.Version=%version% -X main.BinaryOS=%GOOS% -X main.B
 @echo off
 cmd /c echo F | xcopy "bin\%GOOS%_%GOARCH%\goatbrote" "ship\%GOOS%-%GOARCH%\goatbrote" /Y
 cmd /c echo F | xcopy "config\example_bot.ini" "ship\%GOOS%-%GOARCH%\config\example_bot.ini" /Y
+cmd /c echo F | xcopy "config\twitter\example_twitter.ini" "ship\%GOOS%-%GOARCH%\config\twitter\example_twitter.ini" /Y
 cmd /c echo F | xcopy "README.md" "ship\%GOOS%-%GOARCH%\README.md" /Y
 cmd /c echo F | xcopy "images" "ship\%GOOS%-%GOARCH%\images\" /Y
 cd "ship\%GOOS%-%GOARCH%\"
@@ -93,6 +96,7 @@ go install -ldflags "-X main.Version=%version% -X main.BinaryOS=%GOOS% -X main.B
 @echo off
 cmd /c echo F | xcopy "bin\%GOOS%_%GOARCH%\goatbrote" "ship\%GOOS%-%GOARCH%\goatbrote" /Y
 cmd /c echo F | xcopy "config\example_bot.ini" "ship\%GOOS%-%GOARCH%\config\example_bot.ini" /Y
+cmd /c echo F | xcopy "config\twitter\example_twitter.ini" "ship\%GOOS%-%GOARCH%\config\twitter\example_twitter.ini" /Y
 cmd /c echo F | xcopy "README.md" "ship\%GOOS%-%GOARCH%\README.md" /Y
 cmd /c echo F | xcopy "images" "ship\%GOOS%-%GOARCH%\images\" /Y
 cd "ship\%GOOS%-%GOARCH%\"
@@ -117,6 +121,7 @@ go install -ldflags "-X main.Version=%version% -X main.BinaryOS=RPi-%GOOS% -X ma
 @echo off
 cmd /c echo F | xcopy "bin\%GOOS%_%GOARCH%\goatbrote" "ship\%GOOS%-%GOARCH%\goatbrote" /Y
 cmd /c echo F | xcopy "config\example_bot.ini" "ship\%GOOS%-%GOARCH%\config\example_bot.ini" /Y
+cmd /c echo F | xcopy "config\twitter\example_twitter.ini" "ship\%GOOS%-%GOARCH%\config\twitter\example_twitter.ini" /Y
 cmd /c echo F | xcopy "README.md" "ship\%GOOS%-%GOARCH%\README.md" /Y
 cmd /c echo F | xcopy "images" "ship\%GOOS%-%GOARCH%\images\" /Y
 cd "ship\%GOOS%-%GOARCH%\"

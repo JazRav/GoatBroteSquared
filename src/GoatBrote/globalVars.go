@@ -36,4 +36,15 @@ var (
 
 	selfUpdate bool
 
+	twit twitAPIKeys
+
 )
+
+type twitAPIKeys struct {
+	DefaultConfig string
+	CurrentConfg string
+	ConsumerKey string
+	ConsumerSecret string
+	AccessToken string
+	AccessTokenSecret string
+}

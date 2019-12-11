@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
@@ -85,13 +86,36 @@ func main() {
 		log.Print("INI ERROR: e621FitlerScore not set, setting to 2")
 		e6FilterScore = "2"
 	}
+	/* Twitter shit
+	twitAccessToken = cfg.Section("twitter").Key("token").String()
+	twitAccessTokenSecret = cfg.Section("twitter").Key("tokenSecret").String()
+	twitConsumerKey = cfg.Section("twitter").Key("consumer").String()
+	twitConsumerSecret = cfg.Section("twitter").Key("consumerSecret").String()
+	*/
+	//Load default twitter config if it can find it
+	twit.DefaultConfig = cfg.Section("bot").Key("defaultTwitter").String()
+	twitCfg, twitErr := ini.Load("config/twitter/"+twit.DefaultConfig + ".ini")
+	if twitErr != nil {
+		log.Println("Twitter config error: " +twitErr.Error())
+	} else {
+		twit.AccessToken = twitCfg.Section("").Key("token").String()
+		twit.AccessTokenSecret = twitCfg.Section("").Key("tokenSecret").String()
+		twit.ConsumerKey = twitCfg.Section("").Key("consumer").String()
+		twit.ConsumerSecret = twitCfg.Section("").Key("consumerSecret").String()
+	}
+	twit.CurrentConfg = twit.DefaultConfig
+
+
 	//attempts to start a discord session
 	dg, err := discordgo.New("Bot " + botToken)
 	if err != nil {
 		log.Println("Error starting Discord session: ", err)
 		return
 	}
-
+	//Make temp folder
+	if _, tempFolderErr := os.Stat("temp"); os.IsNotExist(tempFolderErr) {
+    os.Mkdir("temp", 0777)
+	}
 	//Adds handlers
 	HostNameCmd := exec.Command("hostname")
 	HostNameSTD, HostNameErr := HostNameCmd.Output()
@@ -119,6 +143,12 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-c
+	tempRemoveErr := os.RemoveAll("temp")
+	if tempRemoveErr != nil {
+		log.Println("Temp folder failed to delete: " + tempRemoveErr.Error())
+	} else {
+		log.Println("Deleted temp folder")
+	}
 	log.Println("KILL SIGNAL DETECTED! Closing Discord Session")
 	dg.Close()
 	log.Println("Closed Discord Session")
@@ -163,7 +193,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	}
 	if logAll == true {
-		log.Println(getNameFromGID(m.Message.GuildID, s) + " (" + getNameFromSID(m.Message.ChannelID, s) + "): " + m.Author.Username + ": " + m.Content)
+		logThatShit(s, m)
+		log.Println(getNameFromGID(m.Message.GuildID, s) + " (" + getNameFromCID(m.Message.ChannelID, s) + "): " + m.Author.Username + ": " + m.Content)
 	}
 	//If any bot is the author of the message, ignore.
 	if m.Author.ID == s.State.User.ID || m.Author.Bot {
@@ -236,7 +267,7 @@ func fileGetter(url string, file string) (err error) {
 	return nil
 }
 
-func getNameFromSID(id string, s *discordgo.Session) (name string){
+func getNameFromCID(id string, s *discordgo.Session) (name string){
 	chanVar, chanerr :=s.Channel(id)
 	if chanerr != nil {
 		name = "Error: Name Not Found"
@@ -254,4 +285,50 @@ func getNameFromGID(id string, s *discordgo.Session) (name string){
 		name = guildVar.Name
 	}
 	return name
+}
+
+func logThatShit(s *discordgo.Session, m *discordgo.MessageCreate) {
+	currentTime := time.Now()
+
+	logPath := "logs/"+ m.GuildID + "("+getNameFromGID(m.Message.GuildID, s)+")" + "/" + m.ChannelID + "("+getNameFromCID(m.Message.ChannelID, s)+")/"
+	logLocation := logPath + 	currentTime.Format("2006-1-02") + ".log"
+
+	logDirExist, logDirErr := dirExists(logPath)
+	if logDirErr != nil {
+		  log.Errorf("%v", logDirErr)
+	}
+	if !logDirExist && logDirErr == nil {
+		os.MkdirAll(logPath, os.ModePerm)
+	}
+
+	logFile, err := os.OpenFile(logLocation, os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+
+	if err != nil {
+    log.Errorf("error opening file: %v", err)
+	}
+	defer logFile.Close()
+	messTime, _ := m.Message.Timestamp.Parse()
+	attachMessage := ""
+	for i := 0; i < len(m.Attachments); i++ {
+		attachMessage = attachMessage + "\n["+strconv.Itoa(i+1)+"]"+m.Attachments[i].URL
+	}
+	content := ""
+	if m.Content == "" {
+		 content = ""
+	} else {
+		content = m.Content + "\n"
+	}
+	if len(m.Attachments) > 0 {
+		attachMessage = "Attachment(s): " + attachMessage + "\n"
+	}
+	if _, fileErr := logFile.WriteString(m.Author.Username + " (" + m.Author.ID + ") - " + m.ID + " - "+ 	messTime.String() +"\n"+content+attachMessage+"\n"); fileErr != nil {
+		log.Println(fileErr)
+	}
+}
+
+func dirExists(path string) (exists bool, dirErr error) {
+	_, err := os.Stat(path)
+	if err == nil { return true, nil }
+	if os.IsNotExist(err) { return false, nil }
+	return true, err
 }
