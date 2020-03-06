@@ -11,6 +11,9 @@ import (
 	"strings"
 	"syscall"
 	"time"
+	"bufio"
+	"encoding/base64"
+	"io/ioutil"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
@@ -331,4 +334,13 @@ func dirExists(path string) (exists bool, dirErr error) {
 	if err == nil { return true, nil }
 	if os.IsNotExist(err) { return false, nil }
 	return true, err
+}
+
+func fileToBase64(file string) (base64file string) {
+	f, _ := os.Open(file)
+	reader := bufio.NewReader(f)
+	content, _ := ioutil.ReadAll(reader)
+
+	base64file = base64.StdEncoding.EncodeToString(content)
+	return base64file
 }

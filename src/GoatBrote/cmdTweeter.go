@@ -1,3 +1,4 @@
+
 package main
 
 import (
@@ -17,9 +18,10 @@ import (
 func init() {
 	makeCmd("twitfollow", cmdTwitFollow).helpText("Follows account").owner().add()
   makeCmd("twitmassfollow", cmdTwitMassFollow).helpText("Follows accounts via uploaded .txt file").owner().add()
-  makeCmd("tweet", cmdTweet).helpText("Follows account").owner().add()
+  makeCmd("tweet", cmdTweet).helpText("Tweets, can upload a single image, 5mb limit").owner().add()
   makeCmd("twit", cmdTwitSwitch).helpText("Manages the twitter config file\n`SET` to set config files\n`LIST` to list config files").owner().add()
 }
+//lol, ngl, i made this to mass follow porn accounts on my AD account, since i don't want to be horny on main anymore
 func cmdTwitMassFollow(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	if len(m.Message.Attachments) == 0 {
     s.ChannelMessageSend(m.ChannelID, "Attach a file, idiot")
@@ -137,11 +139,48 @@ func cmdTwitSwitch(message []string, s *discordgo.Session, m *discordgo.MessageC
 func cmdTweet(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
   status := strings.TrimPrefix(m.Content, message[0])
   status = strings.Replace(status, "`", "", -1)
-  url, err := twitTweet(status, nil)
+
+  var urlink string
+  var err error
+
+  shouldDelete := false
+
+  tweetMediaFile := "images/imagebork.png"
+  if len(m.Attachments) == 1 {
+    log.Println("discord tweet file size is: " + strconv.Itoa(m.Attachments[0].Size) + "b")
+    if m.Attachments[0].Size < 5242880 {
+      fileErr := fileGetter(m.Attachments[0].URL, "temp/" + m.Attachments[0].Filename)
+      if fileErr == nil {
+        tweetMediaFile = "temp/" + m.Attachments[0].Filename
+        shouldDelete = true
+      }
+      mediaFile64 := fileToBase64(tweetMediaFile)
+      //log.Println(mediaFile64)
+      twitMedia, twitFileErr := twitter().UploadMedia(mediaFile64)
+     if twitFileErr != nil {
+        log.Println("twitFileErr: " + twitFileErr.Error())
+      }
+      log.Println("Media ID: " + twitMedia.MediaIDString +" Size: "+ strconv.Itoa(twitMedia.Size))
+      if shouldDelete{
+        os.Remove(tweetMediaFile)
+      }
+      v := url.Values{}
+      if twitMedia.MediaIDString != "" {
+        v.Set("media_ids", strconv.FormatInt(twitMedia.MediaID, 10) )
+        urlink, err = twitTweet(status, v)
+      }
+  }
+    //yes, i know its a bad idea to fucking do this like this, sue me
+    urlink = "You fool, that file is bigger than `5mb`, which is the limit for twitter for some reason"
+  } else {
+    urlink, err = twitTweet(status, nil)
+  }
+
+
   if err != nil {
     s.ChannelMessageSend(m.ChannelID, "It borked with: " + err.Error())
   } else {
-    s.ChannelMessageSend(m.ChannelID, url)
+    s.ChannelMessageSend(m.ChannelID, urlink)
   }
 }
 
@@ -156,6 +195,8 @@ func twitTweet(status string, v url.Values) (url string, err error) {
   twitter().Close()
   return url, err
 }
+
+
 func twitFollow(twitterUser string) (string, error){
   user, err := twitter().FollowUser(twitterUser)
   log.Println(err)

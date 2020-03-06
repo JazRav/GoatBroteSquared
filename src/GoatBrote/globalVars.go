@@ -1,6 +1,9 @@
 package main
 
-import "github.com/go-ini/ini"
+import (
+	"github.com/go-ini/ini"
+	"time"
+)
 
 var (
 	Version   = "undefined"
@@ -47,4 +50,5 @@ type twitAPIKeys struct {
 	ConsumerSecret string
 	AccessToken string
 	AccessTokenSecret string
+	Delay time.Duration
 }
