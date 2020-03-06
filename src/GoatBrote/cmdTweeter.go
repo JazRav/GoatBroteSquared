@@ -169,9 +169,12 @@ func cmdTweet(message []string, s *discordgo.Session, m *discordgo.MessageCreate
         v.Set("media_ids", strconv.FormatInt(twitMedia.MediaID, 10) )
         urlink, err = twitTweet(status, v)
       }
-  }
+  } else {
     //yes, i know its a bad idea to fucking do this like this, sue me
-    urlink = "You fool, that file is bigger than `5mb`, which is the limit for twitter for some reason"
+      urlink = "You fool, that file is bigger than `5mb`, which is the limit for twitter for some reason"
+  }
+
+
   } else {
     urlink, err = twitTweet(status, nil)
   }
