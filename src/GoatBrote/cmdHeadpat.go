@@ -26,7 +26,7 @@ func cmdPat(command []string, s *discordgo.Session, m *discordgo.MessageCreate) 
 	if len(command) > 1 {
 		patNumber = command[1]
 	}
-	pat, mattpat, err, patNum, maxPat := headPat(patNumber)
+	pat, mattpat, patNum, maxPat, err := headPat(patNumber)
 	if err != nil {
 		s.ChannelFileSendWithMessage(m.ChannelID, noPatMessage, "mattpat.png", mattpat)
 		return
@@ -69,34 +69,34 @@ func cmdPat(command []string, s *discordgo.Session, m *discordgo.MessageCreate) 
 	}
 }
 
-func headPat(setPatNum string) (url string, file io.Reader, err error, patNum int, maxPat int) {
+func headPat(setPatNum string) (url string, file io.Reader, patNum int, maxPat int, err error) {
 	//var pats headPats
 	rand.Seed(time.Now().UnixNano())
-	//patsJsonFile := "temp\\pats.json"
+	//patsJSONFile := "temp\\pats.json"
 	if strings.ToLower(setPatNum) == "mattpat" {
 		img, _ := patError()
-		return "images/matpatt.png", bufio.NewReader(img), nil, 0, 0
+		return "images/matpatt.png", bufio.NewReader(img), 0, 0, nil
 	}
-	patsJsonWeb, err := http.Get("https://headp.at/js/pats.json")
+	patsJSONWeb, err := http.Get("https://headp.at/js/pats.json")
 	if err != nil {
 		img, _ := patError()
 		log.Printf("Failed to get file")
-		return "", bufio.NewReader(img), err, 0, 0
+		return "", bufio.NewReader(img), 0, 0, err
 	}
-	defer patsJsonWeb.Body.Close()
+	defer patsJSONWeb.Body.Close()
 
-	patsJson, err := ioutil.ReadAll(patsJsonWeb.Body)
+	patsJSON, err := ioutil.ReadAll(patsJSONWeb.Body)
 	if err != nil {
 		img, _ := patError()
 		log.Printf("Failed to get file")
-		return "", bufio.NewReader(img), err, 0, 0
+		return "", bufio.NewReader(img), 0, 0, err
 	}
 	var pats []string
-	err = json.Unmarshal(patsJson, &pats)
+	err = json.Unmarshal(patsJSON, &pats)
 	if err != nil {
 		img, _ := patError()
 		log.Printf("Failed to unmarshall file")
-		return "", bufio.NewReader(img), err, 0, 0
+		return "", bufio.NewReader(img), 0, 0, err
 	}
 	maxPat = len(pats)
 	if setPatNum != "" {
@@ -114,7 +114,7 @@ func headPat(setPatNum string) (url string, file io.Reader, err error, patNum in
 	url = "https://headp.at/pats/" + pats[patNum]
 	//fixes url by replaces spaces with URL code for spaces %20
 	url = strings.Replace(url, " ", "%20", -1)
-	return url, nil, err, patNum + 1, maxPat
+	return url, nil, patNum + 1, maxPat, err
 }
 
 func patError() (file io.Reader, errOut error) {
