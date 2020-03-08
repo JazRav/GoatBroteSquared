@@ -89,12 +89,6 @@ func main() {
 		log.Print("INI ERROR: e621FitlerScore not set, setting to 2")
 		e6FilterScore = "2"
 	}
-	/* Twitter shit
-	twitAccessToken = cfg.Section("twitter").Key("token").String()
-	twitAccessTokenSecret = cfg.Section("twitter").Key("tokenSecret").String()
-	twitConsumerKey = cfg.Section("twitter").Key("consumer").String()
-	twitConsumerSecret = cfg.Section("twitter").Key("consumerSecret").String()
-	*/
 	//Load default twitter config if it can find it
 	twit.DefaultConfig = cfg.Section("bot").Key("defaultTwitter").String()
 	twitCfg, twitErr := ini.Load("config/twitter/"+twit.DefaultConfig + ".ini")
@@ -108,6 +102,16 @@ func main() {
 	}
 	twit.CurrentConfg = twit.DefaultConfig
 
+	var statusTypeErr error
+	statusMessage = cfg.Section("bot").Key("statusMessage").String()
+	statusType, statusTypeErr = cfg.Section("bot").Key("statusType").Int()
+	if statusTypeErr != nil {
+		statusType = 2 //Sets to status to "Listening" if not a int
+	}
+	statusURL = cfg.Section("bot").Key("statusURL").String()
+	if statusMessage == "" {
+
+	}
 
 	//attempts to start a discord session
 	dg, err := discordgo.New("Bot " + botToken)
@@ -159,8 +163,39 @@ func main() {
 
 //Ready just does shit
 func Ready(s *discordgo.Session, event *discordgo.Ready) {
-	s.UpdateListeningStatus("Don't Forget")
+	if !changeStatus(s, statusMessage, statusType, statusURL, true){
+		log.Println("Failed to change status to " + statusMessage + " as type " + strconv.Itoa(statusType))
+	}
 }
+
+func changeStatus(s *discordgo.Session, message string, messageType int, messageURL string, reset bool) (worked bool) {
+	switch messageType {
+ 	case 1:
+		if reset {
+				s.UpdateListeningStatus("")
+				s.UpdateStreamingStatus(0, "", "")
+		}
+		s.UpdateStatus(0, message)
+	case 2:
+		if reset {
+			s.UpdateStatus(0, "")
+			s.UpdateStreamingStatus(0, "", "")
+		}
+		s.UpdateListeningStatus(message)
+	case 3:
+		if reset {
+			s.UpdateStatus(0, "")
+			s.UpdateListeningStatus("")
+		}
+		s.UpdateStreamingStatus(0, message, messageURL)
+	default:
+		s.UpdateStatus(0, "")
+		s.UpdateListeningStatus("")
+		s.UpdateStreamingStatus(0, "", "")
+	}
+	return false
+}
+
 
 func guildCreate(s *discordgo.Session, event *discordgo.GuildCreate) {
 	if event.Guild.Unavailable {

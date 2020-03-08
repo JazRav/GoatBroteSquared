@@ -6,6 +6,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
 	"github.com/go-ini/ini"
+	"strconv"
 )
 
 func init() {
@@ -21,6 +22,7 @@ func init() {
 	makeCmd("makeinvite", cmdMakeInvite).owner().add()
 	makeCmd("e6filter", cmde621FilterToggle).owner().add()
 	makeCmd("e6filterscore", cmde621FilterScore).owner().add()
+	makeCmd("status", cmdChangeStatus).helpText("`status message` `type` `url` `reset?`\nStatus Message: message to show as status\nType: 0 - None, 1 - Playing, 2 - Listening to, 3 - Streaming").owner().add()
 	//User Commands
 	makeCmd("ver", cmdVersion).helpText("gets version infomation of bot").add()
 	makeCmd("help", cmdHelp).helpText("i dunno what this does").add()
@@ -274,4 +276,34 @@ func cmdGetVideoLink(message []string, s *discordgo.Session, m *discordgo.Messag
 			s.ChannelMessageSendEmbed(m.ChannelID, vidembed)
 		}
 	}
+}
+
+func cmdChangeStatus(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	if len(message) == 1 {
+		s.ChannelMessageSend(m.ChannelID, "Not enough params\nRun help on this command to see details")
+		return
+	}
+	_message := ""
+	_messageType := statusType
+	_reset := false
+	var err error
+	if len(message) >= 2 {
+		if len(message) > 2 {
+			_message = strings.TrimPrefix(m.Content, message[0]+" ")
+			_messageType, err = strconv.Atoi(message[len(message)-1])
+			if err != nil {
+				_messageType = statusType
+			} else {
+				_message = strings.TrimSuffix(_message, message[len(message)-1])
+			}
+		} else if len(message) == 2 {
+			_messageType, err = strconv.Atoi(message[1])
+			if err != nil {
+				_message = strings.TrimPrefix(m.Content, message[0]+" ")
+			}
+		}
+	}
+	changeStatus(s, _message, _messageType, statusURL, _reset)
+
+	s.ChannelMessageSend(m.ChannelID, "Changed status to " + _message )
 }

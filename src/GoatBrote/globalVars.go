@@ -23,6 +23,10 @@ var (
 	devMode  bool
 	logAll   bool
 
+	statusMessage string
+	statusType int // 1: Playing, 2: Listening, 3: Streaming
+	statusURL string
+
 	ownerID string
 
 	cfg     *ini.File
