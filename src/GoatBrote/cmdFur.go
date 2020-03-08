@@ -183,6 +183,7 @@ type eImage struct {
 	TimeStamp string
 	ID 				int
 	EXT				string
+	SoundWarning bool
 }
 
 func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nolewd bool, blacklist string) (eStuff eImage, err error) {
@@ -198,18 +199,31 @@ func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 			filter = "score:>="+e6FilterScore
 		}
 		eLink = "https://e621.net/posts.json?tags=" + filter +"+"+ search + "+"+forcesearch+blacklist+ "+rating:s&limit=320&page="
-		if nsfw && !nolewd {
-			eLink = "https://e621.net/posts.json?tags=" + filter +"+"+ search + "+"+forcesearch+blacklist+ "+-cub+-young+-rating:s&limit=320&page="
+		if nsfw {
+			if !nolewd {
+				 log.Println("did a thing 1")
+					eLink = "https://e621.net/posts.json?tags=" + filter +"+"+ search + "+"+forcesearch+blacklist+ "+-cub+-young+-rating:s&limit=320&page="
+			} else {
+				  log.Println("did a thing 1")
+				  eLink = "https://e621.net/posts.json?tags=" + filter +"+"+ search + "+"+forcesearch+blacklist+ "+rating:s&limit=320&page="
+			}
+
 		}
 	} else {
 			eLink = "https://e621.net/posts.json?tags="+search+forcesearch+"+rating:s&limit=320&page="
 			if nsfw {
-				eLink = "https://e621.net/posts.json?tags="+search+forcesearch+"+-cub+-young+-rating:s&limit=320&page="
+				if !nolewd {
+					  log.Println("did thing 1")
+						eLink = "https://e621.net/posts.json?tags=" + filter +"+"+ search + "+"+forcesearch+blacklist+ "+-cub+-young+-rating:s&limit=320&page="
+				} else {
+					 	log.Println("did thing 2")
+					  eLink = "https://e621.net/posts.json?tags=" + filter +"+"+ search + "+"+forcesearch+blacklist+ "+rating:s&limit=320&page="
+				}
 			}
 	}
 	log.Println("Json: "+eLink)
 	rand.Seed(time.Now().UnixNano())
-	fileGetter(eLink, "temp/e621.json")
+	//fileGetter(eLink, "temp/e621.json")
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", eLink, nil)
 	if err != nil {
@@ -271,8 +285,22 @@ func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 	} else {
 		eStuff.Page = "https://e926.net/post/show/" + strconv.Itoa(e621s.Posts[numE621].ID)
 	}
-	if len(e621s.Posts[numE621].Tags.Artist) > 0 {
+	eStuff.SoundWarning = false
+	for a := 0; a < len(e621s.Posts[numE621].Tags.Artist); a++ {
+		if e621s.Posts[numE621].Tags.Artist[a] == "sound_warning" {
+			eStuff.SoundWarning = true
+		}
+	}
+	if len(e621s.Posts[numE621].Tags.Artist) == 1 {
 		eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0]
+	} else if len(e621s.Posts[numE621].Tags.Artist) == 2 {
+		if e621s.Posts[numE621].Tags.Artist[1] == "sound_warning" {
+			eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0]
+		} else {
+			eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0] + " & " + e621s.Posts[numE621].Tags.Artist[1]
+		}
+	} else if len(e621s.Posts[numE621].Tags.Artist) > 2 {
+		eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0] + " & "+strconv.Itoa(len(e621s.Posts[numE621].Tags.Artist)-1) + " more"
 	} else {
 		eStuff.Artist = "unknown artist"
 	}
@@ -292,7 +320,13 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 	if nolewd && chanInfo.NSFW {
 		search = "id:"+nolewdid
 		forcesearch = ""
+	} else if strings.Contains(search, " ralsei"){
+		search = "id:1700281"
+		forcesearch = ""
+		nolewdmessage = "NO LEWDING THE GOAT YOU FUCK, AT ALL"
+		nolewd = true
 	}
+
 	forceID := false
 	if idlookup {
 		search = "id:" +search
@@ -321,9 +355,12 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 		title = ""
 	}
 	var imageEmbed discordgo.MessageEmbedImage
+	var videoEmbed discordgo.MessageEmbedVideo
 	var clickMessage string
 	if (eStuff.EXT == "webm") {
-		//Something might go here, not sure yet
+		videoEmbed = discordgo.MessageEmbedVideo{
+			URL: eStuff.URL,
+		}
 	} else if (eStuff.EXT == "swf") {
 		clickMessage = "\n\nFile is SWF, please click Source or " + e6ORe9 + " to view"
 	} else {
@@ -331,11 +368,14 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 			URL: eStuff.URL,
 		}
 	}
-
+	soundWarning := ""
+	if eStuff.SoundWarning {
+		soundWarning = "\n⚠WARNING SOUND MIGHT BE LOUD⚠"
+	}
 	if eStuff.Page != "" {
 		e621embed := &discordgo.MessageEmbed{
 			Color:       0x0055ff,
-			Description: "Artist: " + eStuff.Artist + "\nRating: " + eStuff.Rating + " Score: " + strconv.Itoa(eStuff.Score) + "\nID: " + strconv.Itoa(eStuff.ID) +clickMessage,
+			Description: "Artist: " + eStuff.Artist + "\nRating: " + eStuff.Rating + " Score: " + strconv.Itoa(eStuff.Score) + "\nID: " + strconv.Itoa(eStuff.ID) +clickMessage+soundWarning,
 			URL:         link,
 			Author: &discordgo.MessageEmbedAuthor{
 				URL:     eStuff.Page,
@@ -343,6 +383,7 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 				IconURL: "https://i.imgur.com/dbKpPIs.png",
 			},
 			Image: &imageEmbed,
+			Video: &videoEmbed,
 			Title:     title,
 			Timestamp: eStuff.TimeStamp,
 		}
