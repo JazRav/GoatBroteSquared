@@ -15,23 +15,39 @@ import (
 )
 
 func init() {
-	makeCmd("ralsei", cmdFurRalsei).helpText("sends image of best goat\nadd booru tags at the end\nALWAYS SFW, you monster").add()
-	makeCmd("treeboi", cmdFurRalsei).helpText("sends image of best tree\nadd booru tags at the end\nALWAYS SFW, you monster").add()
+
 	makeCmd("fur", cmdFurTrash).helpText("gives you a e621\\e926 image\ne621 in NSFW channels\ne926 in SFW channels\nput booru tags after command").add()
 	makeCmd("e621", cmdFurTrash).helpText("gives you a e621\\e926 image\ne621 in NSFW channels\ne926 in SFW channels\nput booru tags after command").add()
 	makeCmd("e926", cmdFurTrash).helpText("gives you a e621\\e926 image\ne621 in NSFW channels\ne926 in SFW channels\nput booru tags after command").add()
+	makeCmd("furid", cmdFurIDLookup).helpText("sends image with the ID provided\ne621 in NSFW channels, e926 in SFW channels").add()
+
+//Fur subcommands
+	makeCmd("ralsei", cmdFurRalsei).helpText("sends image of best goat\nadd booru tags at the end\nALWAYS SFW, you monster").add()
+	makeCmd("treeboi", cmdFurRalsei).helpText("sends image of best tree\nadd booru tags at the end\nALWAYS SFW, you monster").add()
 	makeCmd("katia", cmdFurKatia).helpText("sends image of best cat\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
 	makeCmd("legoshi", cmdFurLegoshi).helpText("sends image of best wolf\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
 	makeCmd("legosi", cmdFurLegoshi).helpText("sends image of best wolf\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
 	makeCmd("centi", cmdFurCenti).helpText("sends image of centi\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
 	makeCmd("centipeetle", cmdFurCenti).helpText("sends image of centi\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
-	makeCmd("furid", cmdFurIDLookup).helpText("sends image with the ID provided\ne621 in NSFW channels, e926 in SFW channels").add()
+	makeCmd("isabelle", cmdFurIsabelle).helpText("sends image of Isabelle from Animal Crossing\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
+//End of fur subcommands
 }
 
 func cmdFurTrash(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	search := strings.TrimPrefix(m.Content, message[0])
 	e621EmbedMessage(search, false, "", false, "", "", s, m)
 }
+
+
+func cmdFurIDLookup(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	if len(message) >= 2 {
+		e621EmbedMessage(message[1], true, "", false, "", "", s, m)
+	} else {
+		s.ChannelMessageSend(m.ChannelID, "You need to put in an ID")
+	}
+}
+
+//Fur Subcommands
 
 func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	search := strings.TrimPrefix(m.Content, message[0])
@@ -62,14 +78,12 @@ func cmdFurLegoshi(message []string, s *discordgo.Session, m *discordgo.MessageC
 	search := strings.TrimPrefix(m.Content, message[0])
 	e621EmbedMessage(search, false, "Legoshi_(Beastars)", false, "", "", s, m)
 }
-
-func cmdFurIDLookup(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	if len(message) >= 2 {
-		e621EmbedMessage(message[1], true, "", false, "", "", s, m)
-	} else {
-		s.ChannelMessageSend(m.ChannelID, "You need to put in an ID")
-	}
+func cmdFurIsabelle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	search := strings.TrimPrefix(m.Content, message[0])
+	e621EmbedMessage(search, false, "isabelle_(animal_crossing)", false, "", "", s, m)
 }
+//End of Fur Subcommands
+
 
 type e621 struct {
 	Posts []Post `json:"posts"`
@@ -168,6 +182,7 @@ type eImage struct {
 	Rating    string
 	TimeStamp string
 	ID 				int
+	EXT				string
 }
 
 func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nolewd bool, blacklist string) (eStuff eImage, err error) {
@@ -241,6 +256,8 @@ func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 	//Having some issues with loading of images, using sample instead
 	if !e6Sample {
 		eStuff.URL = e621s.Posts[numE621].File.URL
+	} else if e621s.Posts[numE621].File.EXT == "webm" {
+		eStuff.URL = e621s.Posts[numE621].File.URL
 	} else {
 		eStuff.URL = e621s.Posts[numE621].Sample.URL
 	}
@@ -264,6 +281,7 @@ func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 	}
 	eStuff.TimeStamp = e621s.Posts[numE621].CreatedAt
 
+	eStuff.EXT = e621s.Posts[numE621].File.EXT
 	eStuff.ID = e621s.Posts[numE621].ID
 
 	return eStuff, err
@@ -302,23 +320,36 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 		link = eStuff.Page
 		title = ""
 	}
+	var imageEmbed discordgo.MessageEmbedImage
+	var clickMessage string
+	if (eStuff.EXT == "webm") {
+		//Something might go here, not sure yet
+	} else if (eStuff.EXT == "swf") {
+		clickMessage = "\n\nFile is SWF, please click Source or " + e6ORe9 + " to view"
+	} else {
+		imageEmbed = discordgo.MessageEmbedImage{
+			URL: eStuff.URL,
+		}
+	}
+
 	if eStuff.Page != "" {
 		e621embed := &discordgo.MessageEmbed{
 			Color:       0x0055ff,
-			Description: "Artist: " + eStuff.Artist + "\nRating: " + eStuff.Rating + " Score: " + strconv.Itoa(eStuff.Score) + "\nID: " + strconv.Itoa(eStuff.ID),
+			Description: "Artist: " + eStuff.Artist + "\nRating: " + eStuff.Rating + " Score: " + strconv.Itoa(eStuff.Score) + "\nID: " + strconv.Itoa(eStuff.ID) +clickMessage,
 			URL:         link,
 			Author: &discordgo.MessageEmbedAuthor{
 				URL:     eStuff.Page,
 				Name:    e6ORe9,
 				IconURL: "https://i.imgur.com/dbKpPIs.png",
 			},
-			Image: &discordgo.MessageEmbedImage{
-				URL: eStuff.URL,
-			},
+			Image: &imageEmbed,
 			Title:     title,
 			Timestamp: eStuff.TimeStamp,
 		}
 		s.ChannelMessageSendEmbed(m.ChannelID, e621embed)
+		if eStuff.EXT == "webm" {
+			s.ChannelMessageSend(m.ChannelID, eStuff.URL)
+		}
 		if devMode {
 				//s.ChannelMessageSend(m.ChannelID, "URL of Image:" + eStuff.URL)
 		}
