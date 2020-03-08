@@ -7,7 +7,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-/*Below is where you put active commands*/
+/*Cmds Below is where you put active commands*/
 func Cmds() {
 
 }

@@ -116,7 +116,7 @@ func cmdChanList(message []string, s *discordgo.Session, m *discordgo.MessageCre
 		msg = msg + "\n" + c.Name + " (" + c.ID + ") Type: " + chanType
 
 	}
-	guild, err = s.Guild(gid)
+	guild, _ = s.Guild(gid)
 	s.ChannelMessageSend(m.ChannelID, guild.Name+" has the channels\n-------------"+msg)
 }
 func cmdMsgChan(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -213,7 +213,7 @@ func cmdMakeInvite(message []string, s *discordgo.Session, m *discordgo.MessageC
 		}
 
 	} else {
-		i, err = s.ChannelInviteCreate(m.ChannelID, *i)
+		i, _ = s.ChannelInviteCreate(m.ChannelID, *i)
 	}
 
 	s.ChannelMessageSend(m.ChannelID, "discord.gg/"+i.Code)

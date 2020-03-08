@@ -95,7 +95,7 @@ func cmdFurIsabelle(message []string, s *discordgo.Session, m *discordgo.Message
 type e621 struct {
 	Posts []Post `json:"posts"`
 }
-
+//Post from e621
 type Post struct {
 	ID            int         `json:"id"`
 	CreatedAt     string        `json:"created_at"`
@@ -119,7 +119,7 @@ type Post struct {
 	CommentCount  int         `json:"comment_count"`
 	IsFavorited   bool          `json:"is_favorited,omitempty"`
 }
-
+//File from e621.Post
 type File struct {
 	Width  int  `json:"width"`
 	Height int  `json:"height"`
@@ -128,7 +128,7 @@ type File struct {
 	Md5    string `json:"md5"`
 	URL    string `json:"url"`
 }
-
+//Flags from e621.Post
 type Flags struct {
 	Pending      bool `json:"pending,omitempty"`
 	Flagged      bool `json:"flagged,omitempty"`
@@ -137,33 +137,33 @@ type Flags struct {
 	RatingLocked bool `json:"rating_locked,omitempty"`
 	Deleted      bool `json:"deleted,omitempty"`
 }
-
+//Preview from e621.Post
 type Preview struct {
 	Width  int  `json:"width,omitempty"`
 	Height int  `json:"height,omitempty"`
 	URL    string `json:"url,omitempty"`
 }
-
+//Relationships from e621.Post
 type Relationships struct {
 	ParentID          interface{}   `json:"parent_id,omitempty"`
 	HasChildren       bool          `json:"has_children,omitempty"`
 	HasActiveChildren bool          `json:"has_active_children,omitempty"`
 	Children          []interface{} `json:"children,omitempty"`
 }
-
+//Sample from e621.Post
 type Sample struct {
 	Has    bool   `json:"has,omitempty"`
 	Height int  `json:"height,omitempty"`
 	Width  int  `json:"width,omitempty"`
 	URL    string `json:"url,omitempty"`
 }
-
+//Score from e621.Post
 type Score struct {
 	Up    int `json:"up"`
 	Down  int `json:"down"`
 	Total int `json:"total"`
 }
-
+//Tags from e621.Post
 type Tags struct {
 	General   []string      `json:"general,omitempty"`
 	Species   []string      `json:"species,omitempty"`

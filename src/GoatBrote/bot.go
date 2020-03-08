@@ -157,6 +157,7 @@ func main() {
 	log.Println("Closed Discord Session")
 }
 
+//Ready just does shit
 func Ready(s *discordgo.Session, event *discordgo.Ready) {
 	s.UpdateListeningStatus("Don't Forget")
 }
@@ -266,7 +267,7 @@ func fileGetter(url string, file string) (err error) {
 	}
 	defer fileResp.Body.Close()
 	log.Println(fileResp.Body)
-	_, err = io.Copy(mkfile, fileResp.Body)
+	io.Copy(mkfile, fileResp.Body)
 	return nil
 }
 

@@ -6,11 +6,17 @@ import (
 )
 
 var (
+	//Version is whatever is in the version.txt
 	Version   = "undefined"
+	//BinaryOS is whatever the compiled ver is built for
 	BinaryOS = "undefiend"
+	//BinaryArch is whatever architecture its built for
 	BinaryArch = "undefiend"
+	//BuildTime is when it was built
 	BuildTime = "undefined"
+	//GitHash is whatever the git generates
 	GitHash   = "undefined"
+	//HostName of the machine is running on currently
 	HostName = "None"
 
 	botToken string
