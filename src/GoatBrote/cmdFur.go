@@ -39,7 +39,7 @@ func ralseiAntiLewd() string{
 }
 
 func cmdFurTrash(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	search := strings.TrimPrefix(m.Content, message[0])
+	search := strings.TrimPrefix(m.Content, message[0]+" ")
 	e621EmbedMessage(search, false, "", false, "", "", s, m)
 }
 
@@ -55,7 +55,7 @@ func cmdFurIDLookup(message []string, s *discordgo.Session, m *discordgo.Message
 //Fur Subcommands
 
 func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	search := strings.TrimPrefix(m.Content, message[0])
+	search := strings.TrimPrefix(m.Content, message[0]+" ")
 	whatBoi := "GOAT"
 
 	prefix := globalPrefix
@@ -72,21 +72,21 @@ func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCr
 }
 
 func cmdFurKatia(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	search := strings.TrimPrefix(m.Content, message[0])
+	search := strings.TrimPrefix(m.Content, message[0]+" ")
 	e621EmbedMessage(search, false, "Katia_Managan", false, "", "", s, m)
 }
 
 func cmdFurCenti(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	search := strings.TrimPrefix(m.Content, message[0])
+	search := strings.TrimPrefix(m.Content, message[0]+" ")
 	e621EmbedMessage(search, false, "Centipeetle", false, "", "", s, m)
 }
 
 func cmdFurLegoshi(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	search := strings.TrimPrefix(m.Content, message[0])
+	search := strings.TrimPrefix(m.Content, message[0]+" ")
 	e621EmbedMessage(search, false, "Legoshi_(Beastars)", false, "", "", s, m)
 }
 func cmdFurIsabelle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	search := strings.TrimPrefix(m.Content, message[0])
+	search := strings.TrimPrefix(m.Content, message[0]+" ")
 	e621EmbedMessage(search, false, "isabelle_(animal_crossing)", false, "", "", s, m)
 }
 //End of Fur Subcommands
