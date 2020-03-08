@@ -445,10 +445,10 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 		if !chanInfo.NSFW {
 			nsfwMessage = " or if its NSFW, make sure you are in a NSFW channel"
 		}
-		s.ChannelMessageSend(m.ChannelID, "We found nothing for `" + search + "`\nMake sure its an actual ID, and its not blacklisted" + nsfwMessage)
+		s.ChannelMessageSend(m.ChannelID, "Found nothing for `" + search + "`\nMake sure its an actual ID, and its not blacklisted" + nsfwMessage)
 		//s.ChannelMessageSend(m.ChannelID, "DEBUG: ID:" + strconv.Itoa(eStuff.ID)+" URL: " + eStuff.URL)
 	} else {
-		s.ChannelMessageSend(m.ChannelID, "We found nothing for `"+search+"`\nMake sure names with spaces, like Katia Managan is spelt like `Katia_Managan`")
+		s.ChannelMessageSend(m.ChannelID, "Found nothing for `"+search+"`\nMake sure names with spaces, like Katia Managan is spelt like `Katia_Managan`")
 		//s.ChannelMessageSend(m.ChannelID, "DEBUG: ID:" + strconv.Itoa(eStuff.ID)+" URL: " + eStuff.URL)
 	}
 
