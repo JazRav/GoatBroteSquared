@@ -227,7 +227,7 @@ func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 				}
 			}
 	}
-	log.Println("Json: "+eLink)
+	//log.Println("Json: "+eLink)
 	rand.Seed(time.Now().UnixNano())
 	//fileGetter(eLink, "temp/e621.json")
 	client := &http.Client{}
