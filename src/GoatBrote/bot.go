@@ -291,9 +291,12 @@ func getNameFromGID(id string, s *discordgo.Session) (name string){
 }
 
 func logThatShit(s *discordgo.Session, m *discordgo.MessageCreate) {
+	chanInfo, _ := s.Channel(m.ChannelID)
 	currentTime := time.Now()
-
 	logPath := "logs/"+ m.GuildID + "("+getNameFromGID(m.Message.GuildID, s)+")" + "/" + m.ChannelID + "("+getNameFromCID(m.Message.ChannelID, s)+")/"
+	if chanInfo.GuildID == "" {
+		logPath = "logs/DM/" + m.Author.ID + "("+m.Author.Username+")/"
+	}
 	logLocation := logPath + 	currentTime.Format("2006-1-02") + ".log"
 
 	logDirExist, logDirErr := dirExists(logPath)

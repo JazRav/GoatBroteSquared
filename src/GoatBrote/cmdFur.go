@@ -15,21 +15,21 @@ import (
 )
 
 func init() {
-
-	makeCmd("fur", cmdFurTrash).helpText("gives you a e621\\e926 image\ne621 in NSFW channels\ne926 in SFW channels\nput booru tags after command").add()
-	makeCmd("e621", cmdFurTrash).helpText("gives you a e621\\e926 image\ne621 in NSFW channels\ne926 in SFW channels\nput booru tags after command").add()
-	makeCmd("e926", cmdFurTrash).helpText("gives you a e621\\e926 image\ne621 in NSFW channels\ne926 in SFW channels\nput booru tags after command").add()
+	e621HelpMessage := "gives you a e621\\e926 image\ne621 in NSFW channels\ne926 in SFW channels\nput booru tags after command\nin DMs, add `NSFW` at end of tags for NSFW"
+	makeCmd("fur", cmdFurTrash).helpText(e621HelpMessage).add()
+	makeCmd("e621", cmdFurTrash).helpText(e621HelpMessage).add()
+	makeCmd("e926", cmdFurTrash).helpText(e621HelpMessage).add()
 	makeCmd("furid", cmdFurIDLookup).helpText("sends image with the ID provided\ne621 in NSFW channels, e926 in SFW channels").add()
 
 //Fur subcommands
 	makeCmd("ralsei", cmdFurRalsei).helpText("sends image of best goat\nadd booru tags at the end\nALWAYS SFW, you monster").add()
 	makeCmd("treeboi", cmdFurRalsei).helpText("sends image of best tree\nadd booru tags at the end\nALWAYS SFW, you monster").add()
-	makeCmd("katia", cmdFurKatia).helpText("sends image of best cat\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
-	makeCmd("legoshi", cmdFurLegoshi).helpText("sends image of best wolf\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
-	makeCmd("legosi", cmdFurLegoshi).helpText("sends image of best wolf\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
-	makeCmd("centi", cmdFurCenti).helpText("sends image of centi\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
-	makeCmd("centipeetle", cmdFurCenti).helpText("sends image of centi\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
-	makeCmd("isabelle", cmdFurIsabelle).helpText("sends image of Isabelle from Animal Crossing\nadd booru tags at the end\ne621 in NSFW channels, e926 in SFW channels").add()
+	makeCmd("katia", cmdFurKatia).helpText("sends image of best cat\n" + e621HelpMessage).add()
+	makeCmd("legoshi", cmdFurLegoshi).helpText("sends image of best wolf\n"+e621HelpMessage).add()
+	makeCmd("legosi", cmdFurLegoshi).helpText("sends image of best wolf\n"+e621HelpMessage).add()
+	makeCmd("centi", cmdFurCenti).helpText("sends image of centi\n"+e621HelpMessage).add()
+	makeCmd("centipeetle", cmdFurCenti).helpText("sends image of centi\n"+e621HelpMessage).add()
+	makeCmd("isabelle", cmdFurIsabelle).helpText("sends image of Isabelle from Animal Crossing\n"+e621HelpMessage).add()
 //End of fur subcommands
 }
 
@@ -201,10 +201,10 @@ func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 		eLink = "https://e621.net/posts.json?tags=" + filter +"+"+ search + "+"+forcesearch+blacklist+ "+rating:s&limit=320&page="
 		if nsfw {
 			if !nolewd {
-				 log.Println("did a thing 1")
+				 //log.Println("did a thing 1")
 					eLink = "https://e621.net/posts.json?tags=" + filter +"+"+ search + "+"+forcesearch+blacklist+ "+-cub+-young+-rating:s&limit=320&page="
 			} else {
-				  log.Println("did a thing 1")
+				  //log.Println("did a thing 1")
 				  eLink = "https://e621.net/posts.json?tags=" + filter +"+"+ search + "+"+forcesearch+blacklist+ "+rating:s&limit=320&page="
 			}
 
@@ -213,10 +213,10 @@ func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 			eLink = "https://e621.net/posts.json?tags="+search+forcesearch+"+rating:s&limit=320&page="
 			if nsfw {
 				if !nolewd {
-					  log.Println("did thing 1")
+					  //log.Println("did thing 1")
 						eLink = "https://e621.net/posts.json?tags=" + filter +"+"+ search + "+"+forcesearch+blacklist+ "+-cub+-young+-rating:s&limit=320&page="
 				} else {
-					 	log.Println("did thing 2")
+					 	//log.Println("did thing 2")
 					  eLink = "https://e621.net/posts.json?tags=" + filter +"+"+ search + "+"+forcesearch+blacklist+ "+rating:s&limit=320&page="
 				}
 			}
@@ -320,7 +320,7 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 	if nolewd && chanInfo.NSFW {
 		search = "id:"+nolewdid
 		forcesearch = ""
-	} else if strings.Contains(search, " ralsei"){
+	} else if strings.Contains(search, " ralsei") && chanInfo.NSFW{
 		search = "id:1700281"
 		forcesearch = ""
 		nolewdmessage = "NO LEWDING THE GOAT YOU FUCK, AT ALL"
@@ -332,7 +332,14 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 		search = "id:" +search
 		forceID = true
 	}
-	eStuff, err := e621Handler(search, forceID, forcesearch, chanInfo.NSFW, nolewd, "")
+	nsfw := chanInfo.NSFW
+	//log.Println("GID: "+chanInfo.GuildID + " CID: " +chanInfo.ID)
+	//Should be a DM if GuildID is blank
+	if chanInfo.GuildID == "" && strings.HasSuffix(search, "NSFW"){
+		search = strings.TrimSuffix(search, " NSFW")
+		nsfw = true
+	}
+	eStuff, err := e621Handler(search, forceID, forcesearch, nsfw, nolewd, "")
 	if err != nil {
 		log.Println("fuck me it broke with error: " + err.Error())
 		s.ChannelMessageSend(m.ChannelID, "fuck me it broke with error: "+err.Error())
