@@ -304,6 +304,8 @@ func cmdChangeStatus(message []string, s *discordgo.Session, m *discordgo.Messag
 		}
 	}
 	changeStatus(s, _message, _messageType, statusURL, _reset)
-
+	cfg.Section("bot").Key("statusMessage").SetValue(_message)
+	cfg.Section("bot").Key("statusType").SetValue(strconv.Itoa(_messageType))
+	cfg.SaveTo(cfgFile)
 	s.ChannelMessageSend(m.ChannelID, "Changed status to " + _message )
 }
