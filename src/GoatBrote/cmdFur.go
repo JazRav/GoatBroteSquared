@@ -13,7 +13,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
 )
-
 func init() {
 	e621HelpMessage := "gives you a e621\\e926 image\ne621 in NSFW channels\ne926 in SFW channels\nput booru tags after command\nin DMs, add `NSFW` at end of tags for NSFW"
 	makeCmd("fur", cmdFurTrash).helpText(e621HelpMessage).add()
@@ -31,6 +30,12 @@ func init() {
 	makeCmd("centipeetle", cmdFurCenti).helpText("sends image of centi\n"+e621HelpMessage).add()
 	makeCmd("isabelle", cmdFurIsabelle).helpText("sends image of Isabelle from Animal Crossing\n"+e621HelpMessage).add()
 //End of fur subcommands
+}
+
+func ralseiAntiLewd() string{
+	rand.Seed(time.Now().UnixNano())
+	ralseiNoLewd := []string{"1700281" , "1874162", "2031072", "2064695"}
+	return ralseiNoLewd[rand.Intn(len(ralseiNoLewd))]
 }
 
 func cmdFurTrash(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -61,7 +66,9 @@ func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCr
 	if message[0] == prefix+"treeboi" {
 		whatBoi = "TREEBOI"
 	}
-	e621EmbedMessage(search, false, "Ralsei", true, "NO LEWD " + whatBoi, "1700281", s, m)
+
+
+	e621EmbedMessage(search, false, "Ralsei", true, "NO LEWD " + whatBoi, ralseiAntiLewd(), s, m)
 }
 
 func cmdFurKatia(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -191,7 +198,6 @@ func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 	search = strings.Replace(search, " ", "+", -1)
 	//cub begone!
 	search = strings.Replace(search, ";", "", -1)
-	rand.Seed(time.Now().UnixNano())
 	filter := ""
 	eLink := ""
 	if !forceID {
@@ -320,8 +326,8 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 	if nolewd && chanInfo.NSFW {
 		search = "id:"+nolewdid
 		forcesearch = ""
-	} else if strings.Contains(search, " ralsei") && chanInfo.NSFW{
-		search = "id:1700281"
+	} else if (strings.Contains(search, " ralsei") && (chanInfo.NSFW || (chanInfo.GuildID == "" && strings.HasSuffix(search, " NSFW") ) ) ) {
+		search = "id:"+ralseiAntiLewd()
 		forcesearch = ""
 		nolewdmessage = "NO LEWDING THE GOAT YOU FUCK, AT ALL"
 		nolewd = true
