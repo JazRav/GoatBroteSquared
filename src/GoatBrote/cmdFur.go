@@ -346,6 +346,37 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 		nsfw = true
 	}
 	eStuff, err := e621Handler(search, forceID, forcesearch, nsfw, nolewd, "")
+	if eStuff.Rating == "e" {
+		for a := 0; a < len(eStuff.Tags.Character); a++ {
+			if eStuff.Tags.Character[a] == "ralsei" {
+				search = "id:"+ralseiAntiLewd()
+				forcesearch = ""
+				nolewdmessage = "LEWD WITH GOAT DETECTED"
+				nolewd = true
+				eStuff, err = e621Handler(search, forceID, forcesearch, nsfw, nolewd, "")
+				if err != nil {
+					log.Println("fuck me it broke with error: " + err.Error())
+					s.ChannelMessageSend(m.ChannelID, "fuck me it broke with error: "+err.Error())
+					return
+				}
+			}
+		}
+		//Overkill, as the blacklist should catch cub content, but just in case, have FBI
+		for a := 0; a < len(eStuff.Tags.General); a++ {
+			if (eStuff.Tags.General[a] == "cub" || eStuff.Tags.General[a] == "young") {
+				search = "id:2161983"
+				forcesearch = ""
+				nolewdmessage = "CHILD DETECTED, CONTACTING FBI"
+				nolewd = true
+				eStuff, err = e621Handler(search, forceID, forcesearch, nsfw, nolewd, "")
+				if err != nil {
+					log.Println("fuck me it broke with error: " + err.Error())
+					s.ChannelMessageSend(m.ChannelID, "fuck me it broke with error: "+err.Error())
+					return
+				}
+			}
+		}
+	}
 	if err != nil {
 		log.Println("fuck me it broke with error: " + err.Error())
 		s.ChannelMessageSend(m.ChannelID, "fuck me it broke with error: "+err.Error())
