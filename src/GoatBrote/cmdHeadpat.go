@@ -28,7 +28,7 @@ func cmdPat(command []string, s *discordgo.Session, m *discordgo.MessageCreate) 
 	}
 	pat, mattpat, patNum, maxPat, err := headPat(patNumber)
 	if err != nil {
-		s.ChannelFileSendWithMessage(m.ChannelID, noPatMessage, "mattpat.png", mattpat)
+		//s.ChannelFileSendWithMessage(m.ChannelID, noPatMessage, "mattpat.png", mattpat)
 		return
 	}
 	if mattpat != nil {
