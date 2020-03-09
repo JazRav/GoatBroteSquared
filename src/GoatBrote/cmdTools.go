@@ -245,17 +245,18 @@ func cmdGetVideoLink(message []string, s *discordgo.Session, m *discordgo.Messag
 	g, err := s.State.Guild(m.GuildID)
 	if err != nil {
 		s.ChannelMessage(m.ChannelID, "ERROR: " + err.Error())
-	for _, vs := range g.VoiceStates {
-		if vs.UserID == m.Author.ID {
-			vidembed := &discordgo.MessageEmbed{
-				Color:       0x202053,
-				Author: &discordgo.MessageEmbedAuthor{
-					Name:    "Discord Video",
-				},
-				Title:     "Join " + getNameFromCID(vs.ChannelID, s) + "'s video",
-				Description: "https://www.discordapp.com/channels/"+m.GuildID+"/"+vs.ChannelID+"/",
+		for _, vs := range g.VoiceStates {
+			if vs.UserID == m.Author.ID {
+				vidembed := &discordgo.MessageEmbed{
+					Color:       0x202053,
+					Author: &discordgo.MessageEmbedAuthor{
+						Name:    "Discord Video",
+					},
+					Title:     "Join " + getNameFromCID(vs.ChannelID, s) + "'s video",
+					Description: "https://www.discordapp.com/channels/"+m.GuildID+"/"+vs.ChannelID+"/",
+				}
+				s.ChannelMessageSendEmbed(m.ChannelID, vidembed)
 			}
-			s.ChannelMessageSendEmbed(m.ChannelID, vidembed)
 		}
 	}
 }
