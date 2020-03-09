@@ -65,12 +65,6 @@ func main() {
 		log.Print("INI ERROR: logALL not set to BOOL value, setting false")
 		logAll = false
 	}
-	//Checks if memes are dank
-	dankmemes, Err = cfg.Section("bot").Key("dank_memes").Bool()
-	if Err != nil {
-		log.Print("INI ERROR: logALL not set to BOOL value, setting false")
-		dankmemes = false
-	}
 
 	e6Sample, Err = cfg.Section("bot").Key("e621Sample").Bool()
 	if Err != nil {
@@ -259,9 +253,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if strings.HasPrefix(message[0], globalPrefix) {
 			cmdhandle(message, s, m)
 		}
-	}
-	if dankmemes {
-		memesHandler(message, s, m)
 	}
 }
 

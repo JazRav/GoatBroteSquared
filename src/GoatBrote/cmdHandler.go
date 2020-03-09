@@ -30,7 +30,8 @@ func cmdhandle(message []string, s *discordgo.Session, m *discordgo.MessageCreat
 			location := "borked"
 			guild, err := s.Guild(m.GuildID)
 			if err != nil {
-				log.Println("No Guild ID from command location")
+				m.
+				//log.Println("No Guild ID from command location")
 			} else {
 				location = "(" + guild.Name + ")"
 			}

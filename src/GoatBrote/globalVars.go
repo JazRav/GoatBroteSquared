@@ -36,7 +36,6 @@ var (
 	noPatMessage string
 	useGlobalPrefix bool
 	globalPrefix string
-	dankmemes    bool
 
 	guildID []string
 

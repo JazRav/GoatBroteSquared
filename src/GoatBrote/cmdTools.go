@@ -17,7 +17,6 @@ func init() {
 	makeCmd("listguilds", cmdGuildList).owner().add()
 	makeCmd("listchans", cmdChanList).owner().add()
 	makeCmd("msgchan", cmdMsgChan).owner().add()
-	makeCmd("dankmemes", cmdMemeToggle).owner().add()
 	makeCmd("e6Sample", cmde621SampleToggle).owner().add()
 	makeCmd("makeinvite", cmdMakeInvite).owner().add()
 	makeCmd("e6filter", cmde621FilterToggle).owner().add()
@@ -130,22 +129,6 @@ func cmdMsgChan(message []string, s *discordgo.Session, m *discordgo.MessageCrea
 	msg := strings.TrimPrefix(m.Content, message[0]+" "+chanid)
 	s.ChannelMessageSend(chanid, msg)
 	s.ChannelMessageSend(m.ChannelID, chanid+" was sent the message: "+msg)
-}
-
-func cmdMemeToggle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	if dankmemes == false {
-		dankmemes = true
-		cfg.Section("bot").Key("dank_memes").SetValue("true")
-		cfg.SaveTo(cfgFile)
-		s.ChannelMessageSend(m.ChannelID, "DANK MEMES ENABLED")
-		log.Println("DANK MEMES ENABLED")
-	} else {
-		dankmemes = false
-		cfg.Section("bot").Key("dank_memes").SetValue("false")
-		cfg.SaveTo(cfgFile)
-		s.ChannelMessageSend(m.ChannelID, "DANK MEMES DISABLED")
-		log.Println("DANK MEMES DISABLED")
-	}
 }
 
 func cmde621SampleToggle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -262,7 +245,6 @@ func cmdGetVideoLink(message []string, s *discordgo.Session, m *discordgo.Messag
 	g, err := s.State.Guild(m.GuildID)
 	if err != nil {
 		s.ChannelMessage(m.ChannelID, "ERROR: " + err.Error())
-	}
 	for _, vs := range g.VoiceStates {
 		if vs.UserID == m.Author.ID {
 			vidembed := &discordgo.MessageEmbed{
