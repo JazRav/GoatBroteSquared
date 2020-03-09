@@ -239,6 +239,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID || m.Author.Bot {
 		return
 	}
+/*
 	dmCheck, dmErr := comesFromDM(s, m)
 	if dmErr != nil {
 		log.Printf("DM ERROR FROM "+m.Author.Username+"("+m.Author.ID+"): ", dmErr)
@@ -251,7 +252,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if m.Author.ID != ownerID {
 			return
 		}
-	}
+	}*/
 	//Sends messages to commands with prefixs
 	message := strings.Fields(m.Content)
 	if m.Content != "" {
