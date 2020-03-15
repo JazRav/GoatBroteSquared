@@ -364,12 +364,15 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 		nsfw = true
 	}
 	eStuff, err := e621Handler(search, forceID, forcesearch, nsfw, nolewd, "")
-	if eStuff.Rating == "e" {
+	if eStuff.Rating == "e" || eStuff.Rating == "q" {
 		for a := 0; a < len(eStuff.Tags.Character); a++ {
 			if eStuff.Tags.Character[a] == "ralsei" {
 				search = "id:"+ralseiAntiLewd()
 				forcesearch = ""
 				nolewdmessage = "LEWD WITH GOAT DETECTED"
+				if eStuff.Rating == "q" {
+					nolewdmessage = "SEMI-LEWD WITH GOAT DETECTED"
+				}
 				nolewd = true
 				eStuff, err = e621Handler(search, forceID, forcesearch, nsfw, nolewd, "")
 				if err != nil {
