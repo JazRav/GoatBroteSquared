@@ -84,6 +84,11 @@ func main() {
 		e6FilterScore = "2"
 	}
 	//Load default twitter config if it can find it
+	var twitAllErr error
+	twitAll, twitAllErr = cfg.Section("bot").Key("twitterForAll").Bool()
+	if twitAllErr != nil {
+		twitAll = false
+	}
 	twit.DefaultConfig = cfg.Section("bot").Key("defaultTwitter").String()
 	twitCfg, twitErr := ini.Load("config/twitter/"+twit.DefaultConfig + ".ini")
 	if twitErr != nil {
@@ -323,7 +328,7 @@ func logThatShit(s *discordgo.Session, m *discordgo.MessageCreate) {
 	currentTime := time.Now()
 	logPath := "logs/"+ m.GuildID + "("+getNameFromGID(m.Message.GuildID, s)+")" + "/" + m.ChannelID + "("+getNameFromCID(m.Message.ChannelID, s)+")/"
 	if chanInfo.GuildID == "" {
-		logPath = "logs/DM/" + m.Author.ID + "("+m.Author.Username+")/"
+		logPath = "logs/DM/" + m.Author.ID + "("+m.Author.Username+"#"+m.Author.Discriminator+")/"
 	}
 	logLocation := logPath + 	currentTime.Format("2006-1-02") + ".log"
 
@@ -355,7 +360,7 @@ func logThatShit(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if len(m.Attachments) > 0 {
 		attachMessage = "Attachment(s): " + attachMessage + "\n"
 	}
-	if _, fileErr := logFile.WriteString(m.Author.Username + " (" + m.Author.ID + ") - " + m.ID + " - "+ 	messTime.String() +"\n"+content+attachMessage+"\n"); fileErr != nil {
+	if _, fileErr := logFile.WriteString(m.Author.Username + "#" + m.Author.Discriminator +" (" + m.Author.ID + ") - " + m.ChannelID + "-" + m.ID + ": " + 	messTime.String() +"\n"+content+attachMessage+"\n"); fileErr != nil {
 		log.Println(fileErr)
 	}
 }
