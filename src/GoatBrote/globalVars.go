@@ -49,6 +49,7 @@ var (
 	selfUpdate bool
 
 	twit twitAPIKeys
+	twitAll bool
 
 )
 

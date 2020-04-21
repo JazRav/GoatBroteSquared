@@ -18,8 +18,9 @@ import (
 func init() {
 	makeCmd("twitfollow", cmdTwitFollow).helpText("Follows account").owner().add()
   makeCmd("twitmassfollow", cmdTwitMassFollow).helpText("Follows accounts via uploaded .txt file").owner().add()
-  makeCmd("tweet", cmdTweet).helpText("Tweets, can upload a single image, 5mb limit").owner().add()
+  makeCmd("tweet", cmdTweet).helpText("Tweets, can upload a single image, 5mb limit").add()
   makeCmd("twit", cmdTwitSwitch).helpText("Manages the twitter config file\n`SET` to set config files\n`LIST` to list config files").owner().add()
+  makeCmd("alltweet", cmdTwitForAll).helpText("Toggles twitter for everyone").owner().add()
 }
 //lol, ngl, i made this to mass follow porn accounts on my AD account, since i don't want to be horny on main anymore
 func cmdTwitMassFollow(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -136,13 +137,37 @@ func cmdTwitSwitch(message []string, s *discordgo.Session, m *discordgo.MessageC
   }
 }
 
+func cmdTwitForAll(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	if twitAll == false {
+		twitAll = true
+		cfg.Section("bot").Key("twitterForAll").SetValue("true")
+		cfg.SaveTo(cfgFile)
+		s.ChannelMessageSend(m.ChannelID, "TWITTER FOR EVERYONE ENABLED")
+		log.Println("ALL CAN TWEET ENABLED")
+	} else {
+		twitAll = false
+		cfg.Section("bot").Key("twitterForAll").SetValue("false")
+		cfg.SaveTo(cfgFile)
+		s.ChannelMessageSend(m.ChannelID, "TWITTER FOR EVERYONE DISABLED")
+		log.Println("ALL CAN TWEET DISABLED")
+	}
+}
+
 func cmdTweet(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+  if (m.Author.ID != ownerID) && !twitAll{
+    s.ChannelMessageSend(m.ChannelID, "No tweets for you")
+    return;
+  }
   status := strings.TrimPrefix(m.Content, message[0])
   status = strings.Replace(status, "`", "", -1)
 
+  if twitAll && (m.Author.ID != ownerID) {
+    status = status + "\nby " + m.Author.Username + "#" + m.Author.Discriminator
+  }
   var urlink string
   var err error
 
+  //msgContainsFileLink := false
   shouldDelete := false
 
   tweetMediaFile := "images/imagebork.png"

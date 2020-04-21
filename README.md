@@ -63,4 +63,3 @@ You can update your packages if you do it my way with the batch file
 ![alt text][ToddHoward]
 
 [ToddHoward]: https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/ToddHoward2010sm.jpg/220px-ToddHoward2010sm.jpg "Todd 'Godd' Howard"
-
