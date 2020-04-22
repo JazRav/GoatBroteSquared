@@ -38,6 +38,10 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
 			meme.Type = "Denied"
 			meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/702153644732317706/Meme_Denied-1.mp4"
 		}
+		case meme.Random == 69: {
+			meme.Type = "This is Illegal, you know?"
+			meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/702649753212551278/meme_illegal.mp4"
+		}
 	}
 	videoEmbed := discordgo.MessageEmbedVideo{
 		URL: meme.URL,
