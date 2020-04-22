@@ -20,21 +20,25 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
 		meme.Time = time.String()
 	}
 	rand.Seed(time.UnixNano())
-	meme.Random = rand.Intn(3 - 0 + 1)
+	meme.Random = rand.Intn(100 - 0 + 1)
 	switch {
-		case meme.Random == 1: {
+		case meme.Random == 0: {
+			meme.Type = "ERROR"
+			meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/702576438993223711/meme_sorry.mp4"
+		}
+		case meme.Random > 0 && meme.Random < 34: {
 				meme.Type = "Approved"
 				meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/702153568689455154/Meme_Approved-1.mp4"
-			}
-		case meme.Random == 2 || meme.Random == 0: {
+		}
+		case meme.Random > 33 && meme.Random < 66: {
 			meme.Type = "Unsure"
 			meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/702153595583201369/Meme_Limbo-1.mp4"
-			}
-		case meme.Random == 3: {
-				meme.Type = "Denied"
-				meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/702153644732317706/Meme_Denied-1.mp4"
-				}
 		}
+		case meme.Random > 65 && meme.Random < 101: {
+			meme.Type = "Denied"
+			meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/702153644732317706/Meme_Denied-1.mp4"
+		}
+	}
 	videoEmbed := discordgo.MessageEmbedVideo{
 		URL: meme.URL,
 	}
