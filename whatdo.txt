@@ -1,0 +1,12 @@
+Refactor bot fully, new dir struct, etc
+bot.go
+globals.go
+cmdhandler
+	code goes here
+mods
+	mods.go // list mods to load in here
+	CmdName
+		CmdName.go
+		code goes here
+utils // functions that can be global like filegetter or channel id 
+	code goes here
