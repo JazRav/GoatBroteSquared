@@ -50,6 +50,8 @@ var (
 
 	twit twitAPIKeys
 	twitAll bool
+	twitOnly bool
+	twitOnlyChan string
 
 )
 

@@ -156,7 +156,11 @@ func cmdTwitForAll(message []string, s *discordgo.Session, m *discordgo.MessageC
 func cmdTweet(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
   if (m.Author.ID != ownerID) && !twitAll{
     s.ChannelMessageSend(m.ChannelID, "No tweets for you")
-    return;
+    return
+  }
+  if m.Author.ID != ownerID && twitOnly && twitOnlyChan != m.ChannelID{
+    s.ChannelMessageSend(m.ChannelID, "Tweets locked too <@" + m.ChannelID + ">")
+    return
   }
   status := strings.TrimPrefix(m.Content, message[0])
   status = strings.Replace(status, "`", "", -1)
