@@ -94,11 +94,7 @@ func main() {
 	if twitOnlyErr != nil {
 		twitOnly = true
 	}
-	var twitOnlyChanErr error
-	twitOnlyChan, twitOnlyChanErr = cfg.Section("bot").Key("twitterChan").String()
-	if twitOnlyChanErr != nil {
-		twitOnlyChan = ""
-	}
+	twitOnlyChan = cfg.Section("bot").Key("twitterChan").String()
 	twit.DefaultConfig = cfg.Section("bot").Key("defaultTwitter").String()
 	twitCfg, twitErr := ini.Load("config/twitter/"+twit.DefaultConfig + ".ini")
 	if twitErr != nil {
