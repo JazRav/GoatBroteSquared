@@ -85,10 +85,16 @@ func main() {
 	}
 	//Load default twitter config if it can find it
 	var twitAllErr error
-	twitAll, twitAllErr = cfg.Section("bot").Key("twitterForAll").Bool()
+	twit.All, twitAllErr = cfg.Section("bot").Key("twitterForAll").Bool()
 	if twitAllErr != nil {
-		twitAll = false
+		twit.All = false
 	}
+	var twitLockErr error
+	twit.Lock, twitLockErr = cfg.Section("bot").Key("twitterLock").Bool()
+	if twitLockErr != nil {
+		twit.Lock = true
+	}
+	twit.PerChanInfo = cfg.Section("bot").Key("twitterPerChannelInfo").String()
 	twit.DefaultConfig = cfg.Section("bot").Key("defaultTwitter").String()
 	twitCfg, twitErr := ini.Load("config/twitter/"+twit.DefaultConfig + ".ini")
 	if twitErr != nil {

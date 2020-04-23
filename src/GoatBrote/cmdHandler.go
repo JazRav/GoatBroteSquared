@@ -16,6 +16,7 @@ type command struct {
 	Name  string
 	Help  string
 	Owner bool
+	DisableDM bool
 	Exec  func([]string, *discordgo.Session, *discordgo.MessageCreate)
 	Alias []string
 }
@@ -44,6 +45,12 @@ func cmdhandle(message []string, s *discordgo.Session, m *discordgo.MessageCreat
 			log.Println("User " + m.Author.Username + "#" + m.Author.Discriminator + " ran command " + cmd + " in " + location)
 		}
 		isOwner := m.Author.ID == ownerID
+		dm, dmerr := comesFromDM(s, m)
+		if dmerr == nil {
+			if dm && command.DisableDM {
+				s.ChannelMessageSend(m.ChannelID, "Command `" + globalPrefix + command.Name + "` disabled for DMs")
+			}
+		}
 		if !command.Owner || isOwner {
 			command.Exec(message, s, m)
 			return
@@ -67,6 +74,10 @@ func makeCmd(name string, fun func([]string, *discordgo.Session, *discordgo.Mess
 
 func (cmd command) owner() command {
 	cmd.Owner = true
+	return cmd
+}
+func (cmd command) disableDM() command {
+	cmd.DisableDM = true
 	return cmd
 }
 
