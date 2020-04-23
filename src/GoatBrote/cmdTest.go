@@ -8,3 +8,6 @@ func init() {
 func cmdTest(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	s.ChannelMessageSend(m.ChannelID, "Works")
 }
+func load(){
+	main().fuck()
+}
