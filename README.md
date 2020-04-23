@@ -12,7 +12,7 @@ Go to releases up top and download the latest
 
 If you want just the source code added to your **normal** Go
 
-`go get github.com/DrBrobot/GoatBroteSquared/src/GoatBrote`
+`go get github.com/DrBrobot/GoatBroteSquared/`
 
 Check the `config` folder in this git for the `example_bot.ini` file, rename it to `bot.ini` and change for your info
 
@@ -46,18 +46,15 @@ These libraries
 
 `main.BuildTime`
 
-Check `build-dumb.bat` to see how I did it
+I think this works this way
 
-## The dumb way™
-
-If you want to work with the way I set it up *weirdly*
-
-`go get github.com/DrBrobot/GoatBroteSquared/`
-
-You can update your packages if you do it my way with the batch file
-
-`Build-dumb.bat` will Build and Run the bot with the `bot_dev.ini`, which you can make your own by checking in `config` for the `example_bot.ini`, same with `config/twitter` and `example_twitter.ini`
-
+```batch
+set GOPATH=%cd%
+set GOBIN=%cd%\bin
+set GOARCH=amd64
+set GOOS=windows
+go install -ldflags "-X main.Version=%version% -X main.BinaryOS=%GOOS% -X main.BinaryArch=%GOARCH% -X main.GitHash=%githash% -X main.BuildTime=%date:~0,2%-%date:~3,2%-%date:~6,2%T%timetime%" github.com/dokvis/goatbrotesquared
+```
 # It Just Works
 
 ![alt text][ToddHoward]
