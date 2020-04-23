@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/go-ini/ini"
-	"time"
 )
 
 var (
@@ -52,16 +51,3 @@ var (
 
 
 )
-
-type twitAPIKeys struct {
-	DefaultConfig string
-	CurrentConfg string
-	ConsumerKey string
-	ConsumerSecret string
-	AccessToken string
-	AccessTokenSecret string
-	Delay time.Duration
-	All bool
-	Lock bool
-	PerChanInfo string
-}

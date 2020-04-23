@@ -1,4 +1,11 @@
+/*
++++Plan+++
+Twitter manager, coming soon, smoked too much weed to do this now, keep getting distracted, will do later
+-Per Channel Twitter accounts
+-Stored in server INI, so rework it from global INI
+-Automatic replies, retweets and likes posting in discord, going to rate limit it and combin it
 
+*/
 package main
 
 import (
@@ -16,11 +23,16 @@ import (
 )
 
 func init() {
-	makeCmd("twitfollow", cmdTwitFollow).helpText("Follows account").owner().add()
-  makeCmd("twitmassfollow", cmdTwitMassFollow).helpText("Follows accounts via uploaded .txt file").owner().add()
+	makeCmd("twitfollow", cmdTwitFollow).helpText("Follows account on global twitter").owner().add()
+  makeCmd("twitmassfollow", cmdTwitMassFollow).helpText("Follows accounts on global twitter via uploaded .txt file").owner().add()
   makeCmd("tweet", cmdTweet).helpText("Tweets, can upload a single image, 5mb limit").add()
-  makeCmd("twit", cmdTwitSwitch).helpText("Manages the twitter config file\n`SET` to set config files\n`LIST` to list config files").owner().add()
-  makeCmd("alltweet", cmdTwitForAll).helpText("Toggles twitter for everyone").owner().add()
+  makeCmd("twit", cmdTwitSwitch).helpText("Manages the twitter config file\n`SET` to set twitter user for global\n`LIST` to list twitter accounts").owner().add()
+  makeCmd("twitowner", cmdTwitForAll).helpText("Toggles twitter for everyone (global and local)").owner().add()
+  makeCmd("chantwitowner", cmdTwitForAll).helpText("Toggles twitter for everyone (global and local)").owner().add()
+  makeCmd("twitlock", cmdTwitLock).helpText("Locks global twitter to non-admins").owner().add()
+  makeCmd("chantwitlist", cmdTwitListChans).helpText("List whatever twitter account is tied channel").owner().add()
+  makeCmd("chantwitset", cmdTwitListChans).helpText("Set twitter config to this channel").owner().disableDM().add()
+  makeCmd("chantwitremove", cmdTwitRemoveChan).helpText("Removes whatever twitter account is tied channel").owner().disableDM().add()
 }
 //lol, ngl, i made this to mass follow porn accounts on my AD account, since i don't want to be horny on main anymore
 func cmdTwitMassFollow(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -151,7 +163,7 @@ func cmdTwitLock(message []string, s *discordgo.Session, m *discordgo.MessageCre
   }
 }
 func cmdTwitListChans(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-  //Will just list the channels
+
 }
 func cmdTwitSetChan(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
   //Set
@@ -208,7 +220,7 @@ func cmdTweet(message []string, s *discordgo.Session, m *discordgo.MessageCreate
       }
       mediaFile64 := fileToBase64(tweetMediaFile)
       //log.Println(mediaFile64)
-      twitMedia, twitFileErr := twitter().UploadMedia(mediaFile64)
+      twitMedia, twitFileErr := twitter(true, "").UploadMedia(mediaFile64)
      if twitFileErr != nil {
         log.Println("twitFileErr: " + twitFileErr.Error())
       }
@@ -221,12 +233,10 @@ func cmdTweet(message []string, s *discordgo.Session, m *discordgo.MessageCreate
         v.Set("media_ids", strconv.FormatInt(twitMedia.MediaID, 10) )
         urlink, err = twitTweet(status, v)
       }
-  } else {
-    //yes, i know its a bad idea to fucking do this like this, sue me
-      urlink = "You fool, that file is bigger than `5mb`, which is the limit for twitter for some reason"
-  }
-
-
+    } else {
+      //yes, i know its a bad idea to fucking do this like this, sue me
+        urlink = "You fool, that file is bigger than `5mb`, which is the limit for twitter for some reason"
+    }
   } else {
     urlink, err = twitTweet(status, nil)
   }
@@ -239,22 +249,54 @@ func cmdTweet(message []string, s *discordgo.Session, m *discordgo.MessageCreate
   }
 }
 
-func twitter() *anaconda.TwitterApi {
+func twitter(global bool, chanID string) *anaconda.TwitterApi {
+  if global {
+    api := anaconda.NewTwitterApiWithCredentials(twit.AccessToken, twit.AccessTokenSecret, twit.ConsumerKey, twit.ConsumerSecret)
+    return api
+  }
+
   api := anaconda.NewTwitterApiWithCredentials(twit.AccessToken, twit.AccessTokenSecret, twit.ConsumerKey, twit.ConsumerSecret)
   return api
 }
 
 func twitTweet(status string, v url.Values) (url string, err error) {
-  tweet, err := twitter().PostTweet(status, v)
+  tweet, err := twitter(true, "").PostTweet(status, v)
   url = "https://twitter.com/"+tweet.User.ScreenName+"/status/"+tweet.IdStr
-  twitter().Close()
+  twitter(true, "").Close()
   return url, err
 }
 
 
 func twitFollow(twitterUser string) (string, error){
-  user, err := twitter().FollowUser(twitterUser)
+  user, err := twitter(true, "").FollowUser(twitterUser)
   log.Println(err)
-  twitter().Close()
+  twitter(true, "").Close()
   return user.Name, err
+}
+
+func twitChanPaser(chanID string) (){
+
+}
+
+type twitAPIKeys struct {
+	DefaultConfig string
+	CurrentConfg string
+	ConsumerKey string
+	ConsumerSecret string
+	AccessToken string
+	AccessTokenSecret string
+	Delay time.Duration
+	All bool
+	Lock bool
+	PerChanInfo string
+	ChanInfo []twitPerChanInfo
+}
+
+type twitPerChanInfo struct {
+	ChanID string
+	TwitterAccount string
+	GetReplies bool //When I work in a checks
+	GetLikes bool // ditto
+	GetRetweets bool //ditto
+	OwnerOnly bool
 }
