@@ -1,7 +1,5 @@
 # GoatBrote²
 
-This is 0.2.20 code, its a back up what it was before the refactor, since main branch will become refactor one day
-
 A Discord bot that does things and is poorly coded, please don't use it if you want to stay sane.
 
 # Ways to get this shit
