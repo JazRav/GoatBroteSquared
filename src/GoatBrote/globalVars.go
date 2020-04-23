@@ -49,9 +49,7 @@ var (
 	selfUpdate bool
 
 	twit twitAPIKeys
-	twitAll bool
-	twitOnly bool
-	twitOnlyChan string
+
 
 )
 
@@ -63,4 +61,7 @@ type twitAPIKeys struct {
 	AccessToken string
 	AccessTokenSecret string
 	Delay time.Duration
+	All bool
+	Lock bool
+	PerChanInfo string
 }

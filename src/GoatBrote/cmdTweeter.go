@@ -136,16 +136,39 @@ func cmdTwitSwitch(message []string, s *discordgo.Session, m *discordgo.MessageC
     s.ChannelMessageSend(m.ChannelID, "Current twitter config: `" + twit.CurrentConfg + "`, default: `" + twit.DefaultConfig + "`")
   }
 }
+func cmdTwitLock(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+  if twit.Lock {
+    twit.Lock = false
+    cfg.Section("bot").Key("twitterLock").SetValue("false")
+    cfg.SaveTo(cfgFile)
+    s.ChannelMessageSend(m.ChannelID, "Twitter unlocked for all channels (if owner only mode isn't on)")
+  } else if !twit.Lock {
+    twit.Lock = true
+    cfg.Section("bot").Key("twitterLock").SetValue("true")
+    cfg.SaveTo(cfgFile)
+    s.ChannelMessageSend(m.ChannelID, "Twitter locked to channel")
+    log.Println("ALL CAN TWEET DISABLED")
+  }
+}
+func cmdTwitListChans(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+  //Will just list the channels
+}
+func cmdTwitSetChan(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+  //Set
+}
+func cmdTwitRemoveChan(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+
+}
 
 func cmdTwitForAll(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	if twitAll == false {
-		twitAll = true
+	if twit.All == false {
+		twit.All = true
 		cfg.Section("bot").Key("twitterForAll").SetValue("true")
 		cfg.SaveTo(cfgFile)
 		s.ChannelMessageSend(m.ChannelID, "TWITTER FOR EVERYONE ENABLED")
 		log.Println("ALL CAN TWEET ENABLED")
 	} else {
-		twitAll = false
+		twit.All = false
 		cfg.Section("bot").Key("twitterForAll").SetValue("false")
 		cfg.SaveTo(cfgFile)
 		s.ChannelMessageSend(m.ChannelID, "TWITTER FOR EVERYONE DISABLED")
@@ -154,18 +177,18 @@ func cmdTwitForAll(message []string, s *discordgo.Session, m *discordgo.MessageC
 }
 
 func cmdTweet(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-  if (m.Author.ID != ownerID) && !twitAll{
+  if (m.Author.ID != ownerID) && !twit.All{
     s.ChannelMessageSend(m.ChannelID, "No tweets for you")
     return
   }
-  if m.Author.ID != ownerID && twitOnly && twitOnlyChan != m.ChannelID{
-    s.ChannelMessageSend(m.ChannelID, "Tweets locked too <@" + m.ChannelID + ">")
+  if m.Author.ID != ownerID && twit.Lock {
+    s.ChannelMessageSend(m.ChannelID, "Tweets locked too <#" + m.ChannelID + ">")
     return
   }
   status := strings.TrimPrefix(m.Content, message[0])
   status = strings.Replace(status, "`", "", -1)
 
-  if twitAll && (m.Author.ID != ownerID) {
+  if twit.All && (m.Author.ID != ownerID) {
     status = status + "\nby " + m.Author.Username + "#" + m.Author.Discriminator
   }
   var urlink string
