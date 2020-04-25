@@ -11,7 +11,7 @@ import (
 
   log "github.com/Sirupsen/logrus"
 
-  "github.com/dokvis/goatbrotesquared/data/gvars"
+  "github.com/dokvis/goatbrotesquared/util/gvars"
 )
 
 func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nolewd bool, blacklist string) (eStuff eImage, err error) {

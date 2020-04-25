@@ -11,12 +11,12 @@ import (
 
   //Project
   "github.com/dokvis/goatbrotesquared/cmd"
-  "github.com/dokvis/goatbrotesquared/data/gvars"
+  "github.com/dokvis/goatbrotesquared/util/gvars"
 )
 //Load - Loads mod
 func Load(){
 
-  log.Println("Loading e621 commands")
+  log.Println("Loading e621 plugin")
   e621HelpMessage := "gives you a e621\\e926 image\ne621 in NSFW channels\ne926 in SFW channels\nput booru tags after command\nin DMs, add `NSFW` at end of tags for NSFW"
   cmd.Make("fur", "Furry", cmdE621).HelpText(e621HelpMessage).Add()
 }

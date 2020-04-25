@@ -11,12 +11,16 @@ import (
   //Project
   "github.com/dokvis/goatbrotesquared/cmd"
   "github.com/dokvis/goatbrotesquared/mods"
-  "github.com/dokvis/goatbrotesquared/data/gvars"
+  "github.com/dokvis/goatbrotesquared/util/gvars"
 )
+//Load - Loads the command handler
 func Load(){
-  log.Println("Loaded cmds")
+	if gvars.DevMode {
+  	log.Println("Loaded cmds")
+	}
   mods.Load()
 }
+//Handle - Handles commands
 func Handle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	cmds := strings.TrimPrefix(message[0], gvars.Prefix)
 	cmds = strings.ToLower(cmds)

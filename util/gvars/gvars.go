@@ -26,7 +26,9 @@ var(
   //DevMode - Enables dev mods
   DevMode = false
   //ConfigFile - The config file to load
-  ConfigFile = "config/bot.ini"
+  ConfigFile = "data/config/bot.ini"
+  //ConfigFileName - The name of the ini without dir and .ini
+  ConfigFileName = "bot"
   //CFG - The global config file itself
   CFG *ini.File
 )

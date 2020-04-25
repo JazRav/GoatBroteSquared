@@ -14,8 +14,9 @@ import (
 
   //Project
   "github.com/dokvis/goatbrotesquared/cmd/handler"
-  "github.com/dokvis/goatbrotesquared/data/gvars"
-  "github.com/dokvis/goatbrotesquared/data/gini"
+  "github.com/dokvis/goatbrotesquared/util/gvars"
+  "github.com/dokvis/goatbrotesquared/util/gini"
+  "github.com/dokvis/goatbrotesquared/util/guildini"
 )
 
 func main() {
@@ -25,11 +26,13 @@ func main() {
   CFGFile := flag.String("c", "", "Config file name")
 	flag.Parse()
 	if *CFGFile != "" {
-		gvars.ConfigFile = "config/" + *CFGFile
+		gvars.ConfigFile = "data/config/" + *CFGFile
+		gvars.ConfigFileName = strings.TrimSuffix(*CFGFile, ".ini")
 		log.Println("Loading custom config: " + gvars.ConfigFile)
 	} else {
 		log.Println("Loading normal config")
-		gvars.ConfigFile = "config/bot.ini"
+		gvars.ConfigFile = "data/config/bot.ini"
+		gvars.ConfigFileName = "bot"
 	}
   aerr := gini.Init()
   if aerr != nil {
@@ -76,6 +79,7 @@ func guildCreate(s *discordgo.Session, event *discordgo.GuildCreate) {
 		log.Println("Guild " + event.Guild.ID + " is unavailable")
 		return
 	}
+	guildINI.MakeGuildIni(event.Guild.ID)
 	log.Printf("Connected to guild: " + event.Guild.Name + " (" + event.Guild.ID + ")")
 }
 
