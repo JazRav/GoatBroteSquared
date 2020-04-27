@@ -1,9 +1,9 @@
-package e621
+package e6
 
 var (
-  e6Filter = false
-  e6FilterScore = "2"
-  e6Sample = false
+  Filter = false
+  FilterScore = "2"
+  Sample = false
 )
 
 type e621 struct {
@@ -16,7 +16,7 @@ type Post struct {
 	UpdatedAt     string        `json:"updated_at"`
 	File          File          `json:"file"`
 	Preview       Preview       `json:"preview"`
-	Sample        Sample        `json:"sample"`
+	Sample        SampleSt        `json:"sample"`
 	Score         Score         `json:"score"`
 	Tags          Tags          `json:"tags,omitempty"`
 	LockedTags    []interface{} `json:"locked_tags,omitempty"`
@@ -65,7 +65,7 @@ type Relationships struct {
 	Children          []interface{} `json:"children,omitempty"`
 }
 //Sample from e621.Post
-type Sample struct {
+type SampleSt struct {
 	Has    bool   `json:"has,omitempty"`
 	Height int  `json:"height,omitempty"`
 	Width  int  `json:"width,omitempty"`
@@ -89,7 +89,8 @@ type Tags struct {
 	Meta      []interface{} `json:"meta,omitempty"`
 }
 
-type eImage struct {
+// EImage - yes
+type EImage struct {
 	URL       string
 	Page      string
 	Artist    string

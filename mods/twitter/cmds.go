@@ -131,20 +131,6 @@ func cmdTwitSwitch(message []string, s *discordgo.Session, m *discordgo.MessageC
     s.ChannelMessageSend(m.ChannelID, "Current twitter config: `" + twit.CurrentConfg + "`, default: `" + twit.DefaultConfig + "`")
   }
 }
-func cmdTwitLock(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-  if twit.Lock {
-    twit.Lock = false
-    gvars.CFG.Section("bot").Key("twitterLock").SetValue("false")
-    gvars.CFG.SaveTo(gvars.ConfigFile)
-    s.ChannelMessageSend(m.ChannelID, "Twitter unlocked for all channels (if owner only mode isn't on)")
-  } else if !twit.Lock {
-    twit.Lock = true
-    gvars.CFG.Section("bot").Key("twitterLock").SetValue("true")
-    gvars.CFG.SaveTo(gvars.ConfigFile)
-    s.ChannelMessageSend(m.ChannelID, "Twitter locked to channel")
-    log.Println("ALL CAN TWEET DISABLED")
-  }
-}
 func cmdTwitListChans(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 
 }
@@ -156,15 +142,15 @@ func cmdTwitRemoveChan(message []string, s *discordgo.Session, m *discordgo.Mess
 }
 
 func cmdTwitForAll(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	if twit.All == false {
-		twit.All = true
-		gvars.CFG.Section("bot").Key("twitterForAll").SetValue("true")
+	if forAll == false {
+		forAll = true
+		gvars.CFG.Section("twitter").Key("forall").SetValue("true")
 		gvars.CFG.SaveTo(gvars.ConfigFile)
 		s.ChannelMessageSend(m.ChannelID, "TWITTER FOR EVERYONE ENABLED")
 		log.Println("ALL CAN TWEET ENABLED")
 	} else {
-		twit.All = false
-		gvars.CFG.Section("bot").Key("twitterForAll").SetValue("false")
+		forAll = false
+		gvars.CFG.Section("twitter").Key("forall").SetValue("false")
 		gvars.CFG.SaveTo(gvars.ConfigFile)
 		s.ChannelMessageSend(m.ChannelID, "TWITTER FOR EVERYONE DISABLED")
 		log.Println("ALL CAN TWEET DISABLED")
@@ -172,7 +158,7 @@ func cmdTwitForAll(message []string, s *discordgo.Session, m *discordgo.MessageC
 }
 
 func cmdTweet(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-  if (m.Author.ID != gvars.Owner) && !twit.All{
+  if (m.Author.ID != gvars.Owner) && !forAll{
     s.ChannelMessageSend(m.ChannelID, "No tweets for you")
     return
   }
@@ -183,7 +169,7 @@ func cmdTweet(message []string, s *discordgo.Session, m *discordgo.MessageCreate
   status := strings.TrimPrefix(m.Content, message[0])
   status = strings.Replace(status, "`", "", -1)
 
-  if twit.All && (m.Author.ID != gvars.Owner) {
+  if forAll && (m.Author.ID != gvars.Owner) {
     status = status + "\nby " + m.Author.Username + "#" + m.Author.Discriminator
   }
   var urlink string

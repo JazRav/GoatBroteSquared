@@ -3,10 +3,12 @@ package main
 import (
   //Built In
 	"os"
+	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
   "flag"
+	"fmt"
 
   //Imported
 	log "github.com/Sirupsen/logrus"
@@ -17,12 +19,11 @@ import (
   "github.com/dokvis/goatbrotesquared/util/gvars"
   "github.com/dokvis/goatbrotesquared/util/gini"
   "github.com/dokvis/goatbrotesquared/util/guildini"
+	"github.com/dokvis/goatbrotesquared/util/tools/discord"
 )
-
 func main() {
-	log.SetFormatter(&log.TextFormatter{
-		FullTimestamp: true,
-	})
+	consoleFormat()
+	verInfoSet()
   CFGFile := flag.String("c", "", "Config file name")
 	flag.Parse()
 	if *CFGFile != "" {
@@ -45,7 +46,7 @@ func main() {
 	}
   gvars.Prefix = "<"
   cmdHandle.Load()
-	dg.AddHandler(Ready)
+	dg.AddHandler(ready)
 	dg.AddHandler(messageCreate)
 	dg.AddHandler(guildCreate)
 	//dg.AddHandler(comesFromDM)
@@ -70,7 +71,7 @@ func main() {
 	log.Println("Closed Discord Session")
 }
 
-func Ready(s *discordgo.Session, event *discordgo.Ready) {
+func ready(s *discordgo.Session, event *discordgo.Ready) {
 
 }
 
@@ -90,4 +91,66 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			cmdHandle.Handle(message, s, m)
 		}
 	}
+	if gvars.LogAll == true {
+		discordTools.LogThatShit(s, m)
+		log.Println(discordTools.GetNameFromGID(m.Message.GuildID, s) + " (" + discordTools.GetNameFromCID(m.Message.ChannelID, s) + "): " + m.Author.Username + ": " + m.Content)
+	}
 }
+//PlainFormatter - Stolen code from some stackoverflow shit - https://stackoverflow.com/questions/43022607/how-do-i-disable-field-name-in-logrus-while-logging-to-file
+type PlainFormatter struct {
+    TimestampFormat string
+    LevelDesc []string
+}
+
+func verInfoSet(){
+	HostNameCmd := exec.Command("hostname")
+	HostNameSTD, HostNameErr := HostNameCmd.Output()
+	if HostNameErr != nil {
+		gvars.HostName = "unknown"
+	} else {
+		gvars.HostName = string(HostNameSTD)
+	}
+	gvars.Version = Version
+	gvars.BinaryOS = BinaryOS
+	gvars.BinaryArch = BinaryArch
+	gvars.BuildTime = BuildTime
+	gvars.GitHash = GitHash
+	log.Println("Loading \u001B[35mGoatBrote\033[0m²")
+	log.Println("Version: "+gvars.Version + "-" + gvars.BinaryOS + "-" + gvars.BinaryArch)
+	log.Println("GitHash: " + gvars.GitHash)
+	log.Println("Build Time:" + gvars.BuildTime)
+}
+//Format - aaaaaa
+func (f *PlainFormatter) Format(entry *log.Entry) ([]byte, error) {
+    timestamp := fmt.Sprintf(entry.Time.Format(f.TimestampFormat))
+		var level string
+		switch f.LevelDesc[entry.Level] {
+			case "ERRO" : level = "\033[1;31m"+f.LevelDesc[entry.Level]+"\033[0m"
+			case "FATL" : level = "\033[1;32m"+f.LevelDesc[entry.Level]+"\033[0m"
+			case "DEBG" : level = "\u001B[35m"+f.LevelDesc[entry.Level]+"\033[0m"
+			default: level = "\033[1;34m"+f.LevelDesc[entry.Level]+"\033[0m"
+		}
+    return []byte(fmt.Sprintf("%s %s %s\n", level, timestamp, "\t"+entry.Message)), nil
+}
+
+func consoleFormat() {
+	plainFormatter := new(PlainFormatter)
+	plainFormatter.TimestampFormat = "2006-01-02 15:04:05"
+	plainFormatter.LevelDesc = []string{"PANC", "FATL", "ERRO", "WARN", "INFO", "DEBG"}
+	log.SetFormatter(plainFormatter)
+}
+
+var (
+	//Don't use this shit
+
+	//Version - a
+	Version   = "dev"
+	//BinaryOS - a
+	BinaryOS = "dev"
+	//BinaryArch - a
+	BinaryArch = "dev"
+	//BuildTime - a
+	BuildTime = "before time"
+	//GitHash - a
+	GitHash   = "what the fuck is a git?"
+)

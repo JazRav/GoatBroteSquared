@@ -31,4 +31,14 @@ var(
   ConfigFileName = "bot"
   //CFG - The global config file itself
   CFG *ini.File
+  //LogAll - Log everything
+  LogAll = false
+  //GuildID - guildID array
+	GuildID []string
+  //StatusMessage - The message shown as "playing... " etc
+  StatusMessage string
+  //StatusType - The type of status 1: Playing, 2: Listening, 3: Streaming
+  StatusType = 1
+  //StatusURL - The URL of the status
+  StatusURL string
 )

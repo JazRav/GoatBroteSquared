@@ -27,7 +27,7 @@ func FileToBase64(file string) (base64file string) {
 	return base64file
 }
 
-//FileGetter Downloads files 
+//FileGetter Downloads files
 func FileGetter(url string, file string) (err error) {
 	mkfile, err := os.Create(file)
 	if err != nil {
@@ -55,4 +55,17 @@ func FileGetter(url string, file string) (err error) {
 	defer fileResp.Body.Close()
 	io.Copy(mkfile, fileResp.Body)
 	return nil
+}
+
+//UniqueSilce - Removes dupes
+func UniqueSilce(strSlice []string) []string {
+    keys := make(map[string]bool)
+    list := []string{}
+    for _, entry := range strSlice {
+        if _, value := keys[entry]; !value {
+            keys[entry] = true
+            list = append(list, entry)
+        }
+    }
+    return list
 }

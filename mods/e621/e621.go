@@ -4,7 +4,8 @@ import (
   //Built in
   "strconv"
   "strings"
-
+  "math/rand"
+  "time"
   //Imported
   log "github.com/Sirupsen/logrus"
   "github.com/bwmarrin/discordgo"
@@ -12,13 +13,36 @@ import (
   //Project
   "github.com/dokvis/goatbrotesquared/cmd"
   "github.com/dokvis/goatbrotesquared/util/gvars"
+
+  "github.com/dokvis/goatbrotesquared/mods/e621/handler"
 )
 //Load - Loads mod
 func Load(){
-
+  //e621 commands
+  furCat := "Furry"
   log.Println("Loading e621 plugin")
   e621HelpMessage := "gives you a e621\\e926 image\ne621 in NSFW channels\ne926 in SFW channels\nput booru tags after command\nin DMs, add `NSFW` at end of tags for NSFW"
-  cmd.Make("fur", "Furry", cmdE621).HelpText(e621HelpMessage).Add()
+  cmd.Make("fur", furCat, cmdE621).HelpText(e621HelpMessage).Hidden().Add()
+  cmd.Make("e621", furCat, cmdE621).HelpText(e621HelpMessage).Hidden().Add()
+  cmd.Make("e926", furCat, cmdE621).HelpText(e621HelpMessage).Hidden().Add()
+  cmd.Make("furid", furCat, cmdE621ID).HelpText("sends image with the ID provided\ne621 in NSFW channels, e926 in SFW channels").Add()
+
+  //e621 subcommands
+  cmd.Make("ralsei", furCat, cmdFurRalsei).HelpText("sends image of best goat\nadd booru tags at the end\nALWAYS SFW, you monster").Add()
+  cmd.Make("treeboi", furCat, cmdFurRalsei).HelpText("sends image of best tree\nadd booru tags at the end\nALWAYS SFW, you monster").Hidden().Add()
+  cmd.Make("katia", furCat, cmdFurKatia).HelpText("sends image of best cat\n" + e621HelpMessage).Add()
+  cmd.Make("legoshi", furCat, cmdFurLegoshi).HelpText("sends image of best wolf\n"+e621HelpMessage).Add()
+  cmd.Make("legosi", furCat, cmdFurLegoshi).HelpText("sends image of best wolf\n"+e621HelpMessage).Hidden().Add()
+  cmd.Make("centi", furCat, cmdFurCenti).HelpText("sends image of centi\n"+e621HelpMessage).Add()
+  cmd.Make("centipeetle", furCat, cmdFurCenti).HelpText("sends image of centi\n"+e621HelpMessage).Hidden().Add()
+  cmd.Make("isabelle", furCat, cmdFurIsabelle).HelpText("sends image of Isabelle from Animal Crossing\n"+e621HelpMessage).Add()
+
+  //Manage
+  cmd.Make("e6sample", furCat, cmde621SampleToggle).Owner().Add()
+	cmd.Make("e6filter", furCat, cmde621FilterToggle).Owner().Add()
+	cmd.Make("e6filterscore", furCat, cmde621FilterScore).Owner().Add()
+
+  loadINI()
 }
 
 func cmdE621(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -27,6 +51,60 @@ func cmdE621(message []string, s *discordgo.Session, m *discordgo.MessageCreate)
 		search = strings.TrimPrefix(m.Content, message[0]+" ")
 	}
 	e621EmbedMessage(search, false, "", false, "", "", s, m)
+}
+func cmdE621ID(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	if len(message) >= 2 {
+		e621EmbedMessage(message[1], true, "", false, "", "", s, m)
+	} else {
+		s.ChannelMessageSend(m.ChannelID, "You need to put in an ID")
+	}
+}
+func cmdFurRalsei(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	search := ""
+	if len(message) > 1 {
+		search = strings.TrimPrefix(m.Content, message[0]+" ")
+	}
+	whatBoi := "GOAT"
+
+	prefix := gvars.Prefix
+
+	if message[0] == prefix+"treeboi" {
+		whatBoi = "TREEBOI"
+	}
+
+
+	e621EmbedMessage(search, false, "Ralsei", true, "NO LEWD " + whatBoi, ralseiAntiLewd(), s, m)
+}
+
+func cmdFurKatia(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	search := ""
+	if len(message) > 1 {
+		search = strings.TrimPrefix(m.Content, message[0]+" ")
+	}
+	e621EmbedMessage(search, false, "Katia_Managan", false, "", "", s, m)
+}
+
+func cmdFurCenti(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	search := ""
+	if len(message) > 1 {
+		search = strings.TrimPrefix(m.Content, message[0]+" ")
+	}
+	e621EmbedMessage(search, false, "Centipeetle", false, "", "", s, m)
+}
+
+func cmdFurLegoshi(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	search := ""
+	if len(message) > 1 {
+		search = strings.TrimPrefix(m.Content, message[0]+" ")
+	}
+	e621EmbedMessage(search, false, "Legoshi_(Beastars)", false, "", "", s, m)
+}
+func cmdFurIsabelle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	search := ""
+	if len(message) > 1 {
+		search = strings.TrimPrefix(m.Content, message[0]+" ")
+	}
+	e621EmbedMessage(search, false, "isabelle_(animal_crossing)", false, "", "", s, m)
 }
 
 
@@ -54,7 +132,7 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 		search = strings.TrimSuffix(search, " NSFW")
 		nsfw = true
 	}
-	eStuff, err := e621Handler(search, forceID, forcesearch, nsfw, nolewd, "")
+	eStuff, err := e6.E621Handler(search, forceID, forcesearch, nsfw, nolewd, "")
 	if eStuff.Rating == "e" || eStuff.Rating == "q" {
 		for a := 0; a < len(eStuff.Tags.Character); a++ {
 			if eStuff.Tags.Character[a] == "ralsei" {
@@ -65,7 +143,7 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 					nolewdmessage = "SEMI-LEWD WITH GOAT DETECTED"
 				}
 				nolewd = true
-				eStuff, err = e621Handler(search, forceID, forcesearch, nsfw, nolewd, "")
+				eStuff, err = e6.E621Handler(search, forceID, forcesearch, nsfw, nolewd, "")
 				if err != nil {
 					log.Println("fuck me it broke with error: " + err.Error())
 					s.ChannelMessageSend(m.ChannelID, "fuck me it broke with error: "+err.Error())
@@ -80,7 +158,7 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 				forcesearch = ""
 				nolewdmessage = "CHILD DETECTED, CONTACTING FBI"
 				nolewd = true
-				eStuff, err = e621Handler(search, forceID, forcesearch, nsfw, nolewd, "")
+				eStuff, err = e6.E621Handler(search, forceID, forcesearch, nsfw, nolewd, "")
 				if err != nil {
 					log.Println("fuck me it broke with error: " + err.Error())
 					s.ChannelMessageSend(m.ChannelID, "fuck me it broke with error: "+err.Error())
@@ -164,4 +242,75 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 		//s.ChannelMessageSend(m.ChannelID, "DEBUG: ID:" + strconv.Itoa(eStuff.ID)+" URL: " + eStuff.URL)
 	}
 
+}
+
+func cmde621SampleToggle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	if e6.Sample == false {
+		e6.Sample = true
+		gvars.CFG.Section("e621").Key("sample").SetValue("true")
+		gvars.CFG.SaveTo(gvars.ConfigFile)
+		s.ChannelMessageSend(m.ChannelID, "e621/e926 SAMPLE ENABLED")
+		log.Println("e621 SAMPLE ENABLED")
+	} else {
+		e6.Sample = false
+		gvars.CFG.Section("e621").Key("sample").SetValue("false")
+		gvars.CFG.SaveTo(gvars.ConfigFile)
+		s.ChannelMessageSend(m.ChannelID, "e621/e926 SAMPLE DISABLED")
+		log.Println("e621 SAMPLE DISABLED")
+	}
+}
+
+func cmde621FilterToggle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	if e6.Filter == false {
+		e6.Filter = true
+		gvars.CFG.Section("e621").Key("filter").SetValue("true")
+		gvars.CFG.SaveTo(gvars.ConfigFile)
+		s.ChannelMessageSend(m.ChannelID, "e621/e926 FILTER ENABLED")
+		log.Println("e621 FILTER ENABLED")
+	} else {
+		e6.Filter = false
+		gvars.CFG.Section("e621").Key("filter").SetValue("false")
+		gvars.CFG.SaveTo(gvars.ConfigFile)
+		s.ChannelMessageSend(m.ChannelID, "e621/e926 FILTER DISABLED")
+		log.Println("e621 FILTER DISABLED")
+	}
+}
+
+func cmde621FilterScore(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+	score := strings.TrimPrefix(m.Content, message[0] + " ")
+	if e6.Filter == false {
+		s.ChannelMessageSend(m.ChannelID, "FILTER DISABLED, PLEASE ENABLE FILTER WITH ``" +gvars.Prefix + "e6filter`")
+		log.Println("e621 FILTER ENABLED")
+	} else {
+		var extraMessage string
+		extraMessage = ""
+		if score == "<e6filterscore"	{
+			score = "2"
+			extraMessage = "NOTHING SET, SETTING "
+		}
+		e6.FilterScore = score
+		gvars.CFG.Section("e621").Key("filterScore").SetValue(e6.FilterScore)
+		gvars.CFG.SaveTo(gvars.ConfigFile)
+		s.ChannelMessageSend(m.ChannelID, extraMessage +"FILTER SCORE TO " + e6.FilterScore)
+		log.Println("e621 FILTER SCORE SET TO " + e6.FilterScore)
+	}
+}
+func loadINI(){
+  var err error
+  e6.FilterScore = gvars.CFG.Section("e621").Key("filterScore").String()
+  e6.Filter, err = gvars.CFG.Section("e621").Key("filter").Bool()
+  if err != nil {
+    e6.Filter = true
+  }
+  err = nil
+  e6.Sample, err = gvars.CFG.Section("e621").Key("sample").Bool()
+  if err != nil {
+    e6.Sample = true
+  }
+}
+//Protect the goat
+func ralseiAntiLewd() string{
+	rand.Seed(time.Now().UnixNano())
+	ralseiNoLewd := []string{"1700281" , "1874162", "2031072", "2064695"}
+	return ralseiNoLewd[rand.Intn(len(ralseiNoLewd))]
 }

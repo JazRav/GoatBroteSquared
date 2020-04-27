@@ -1,4 +1,4 @@
-package e621
+package e6
 
 import (
   "encoding/json"
@@ -13,8 +13,8 @@ import (
 
   "github.com/dokvis/goatbrotesquared/util/gvars"
 )
-
-func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nolewd bool, blacklist string) (eStuff eImage, err error) {
+//E621Handler - Handles e621 requests
+func E621Handler(search string, forceID bool, forcesearch string, nsfw bool, nolewd bool, blacklist string) (eStuff EImage, err error) {
 	var e621s e621
 	search = strings.Replace(search, " ", "+", -1)
 	//cub begone!
@@ -22,8 +22,8 @@ func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 	filter := ""
 	eLink := ""
 	if !forceID {
-		if e6Filter {
-			filter = "score:>="+e6FilterScore
+		if Filter {
+			filter = "score:>="+FilterScore
 		}
 		eLink = "https://e621.net/posts.json?tags=" + filter +"+"+ search + "+"+forcesearch+blacklist+ "+rating:s&limit=320&page="
 		if nsfw {
@@ -95,7 +95,7 @@ func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 
 	eStuff.Rating = e621s.Posts[numE621].Rating
 	//Having some issues with loading of images, using sample instead
-	if !e6Sample {
+	if !Sample {
 		eStuff.URL = e621s.Posts[numE621].File.URL
 	} else if e621s.Posts[numE621].File.EXT == "webm" {
 		eStuff.URL = e621s.Posts[numE621].File.URL
@@ -140,9 +140,4 @@ func e621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 	eStuff.ID = e621s.Posts[numE621].ID
 
 	return eStuff, err
-}
-func ralseiAntiLewd() string{
-	rand.Seed(time.Now().UnixNano())
-	ralseiNoLewd := []string{"1700281" , "1874162", "2031072", "2064695"}
-	return ralseiNoLewd[rand.Intn(len(ralseiNoLewd))]
 }

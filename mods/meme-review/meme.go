@@ -3,7 +3,9 @@ package memereview
 import (
   "math/rand"
   "strconv"
+  "time"
 
+  log "github.com/Sirupsen/logrus"
   "github.com/bwmarrin/discordgo"
 
   "github.com/dokvis/goatbrotesquared/cmd"
@@ -11,14 +13,17 @@ import (
 
 //Load - Loads meme review
 func Load() {
-	cmd.Make("meme","Meme Review", cmdMemeReview).HelpText("Reviews meme").Add()
-  cmd.Make("mr","Meme Review", cmdMemeReview).HelpText("Reviews meme").Add()
-  cmd.Make("memereview","Meme Review", cmdMemeReview).HelpText("Reviews meme").Add()
+  log.Println("Loading Meme Review plugin")
+	cmd.Make("meme","Fun", cmdMemeReview).HelpText("Reviews meme").Hidden().Add()
+  cmd.Make("mr","Fun", cmdMemeReview).HelpText("Reviews meme").Hidden().Add()
+  cmd.Make("memereview","Fun", cmdMemeReview).HelpText("Reviews meme").Add()
 }
+
 
 func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	time, err := m.Timestamp.Parse()
 	var meme memeReview
+  var me editMemeSt
 	if err != nil {
 		meme.Time = "nil"
 	} else {
@@ -71,14 +76,34 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
       meme.Type =  "IS THAT A JOJO REFRENCE?"
       meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/703720502795042987/meme_IS_THAT_A_JOJO_2.mp4"
     }
+    case meme.Random == 300: {
+      meme.Type = "Meme Persona"
+      meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704011280167600128/meme_persona.mp4"
+    }
+    case meme.Random == 333: {
+      meme.Type = "Unsure" //Is actually approved
+      meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704012667450425444/meme_limbo_.mp4"
+      me.Type = "Approved"
+      me.Edit = true
+      me.Delay = 15
+    }
+    case meme.Random == 421: {
+      meme.Type = "Meme"
+      meme.URL = "https://cdn.discordapp.com/attachments/614851241406627914/704020711416529046/meme.mp4"
+    }
+    case meme.Random == 900 : {
+      meme.Type = "Memes of production stolen"
+      meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704013328913268736/meme_production_stolen.mp4"
+    }
     //Ranges
-		case meme.Random > 0 && meme.Random < 340: {
+		case meme.Random > 0 && meme.Random < 334: {
 				meme.Type = "Approved"
         rand.Seed(time.UnixNano())
-        if rand.Intn(2 - 0 + 1) == 1 {
-          meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/703723341604716664/meme_approved_2.mp4"
-        } else {
-           meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/702153568689455154/Meme_Approved-1.mp4"
+        randNum := rand.Intn(10 - 0 + 1)
+        switch randNum {
+          case 1: meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/703723341604716664/meme_approved_2.mp4"
+          case 2: meme.URL =  "https://cdn.discordapp.com/attachments/614851241406627914/704020695469785228/meme_approved_3.mp4"
+          default: meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/702153568689455154/Meme_Approved-1.mp4"
         }
 		}
 		case meme.Random > 333 && meme.Random < 666: {
@@ -100,7 +125,14 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
 		Title:     meme.Type,
 	}
 
-	s.ChannelMessageSendEmbed(m.ChannelID, memeReviewEmbed)
+	memeEmbed, err := s.ChannelMessageSendEmbed(m.ChannelID, memeReviewEmbed)
+  if err != nil {
+    log.Errorln("Meme embed failed: " + err.Error())
+    return
+  }
+  if me.Edit {
+    defer editMeme(me, memeEmbed.ID, s, m)
+  }
 	s.ChannelMessageSend(m.ChannelID, meme.URL)
 	//log.Println("memereview sending " + memeerr.Error())
 }
@@ -110,4 +142,20 @@ type memeReview struct {
 	Type string
 	Time string
 	Random int
+}
+type editMemeSt struct {
+  Edit bool
+  Type string
+  Delay time.Duration
+}
+
+func editMeme(do editMemeSt, msgid string, s *discordgo.Session, m *discordgo.MessageCreate) {
+  memeReviewEmbed := &discordgo.MessageEmbed{
+    Color:       0x880000,
+    Description: "",
+    //Video: &videoEmbed,
+    Title:     do.Type,
+  }
+  time.Sleep(do.Delay*time.Second)
+  s.ChannelMessageEditEmbed(m.ChannelID, msgid, memeReviewEmbed)
 }

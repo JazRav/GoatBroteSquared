@@ -78,7 +78,7 @@ func headPat(setPatNum string) (url string, file io.Reader, patNum int, maxPat i
 	patsJSONWeb, err := http.Get("https://headp.at/js/pats.json")
 	if err != nil {
 		img, _ := patError()
-		log.Printf("Failed to get file")
+		log.Errorln("Failed to get file")
 		return "", bufio.NewReader(img), 0, 0, err
 	}
 	defer patsJSONWeb.Body.Close()
@@ -86,14 +86,14 @@ func headPat(setPatNum string) (url string, file io.Reader, patNum int, maxPat i
 	patsJSON, err := ioutil.ReadAll(patsJSONWeb.Body)
 	if err != nil {
 		img, _ := patError()
-		log.Printf("Failed to get file")
+		log.Errorln("Failed to get file")
 		return "", bufio.NewReader(img), 0, 0, err
 	}
 	var pats []string
 	err = json.Unmarshal(patsJSON, &pats)
 	if err != nil {
 		img, _ := patError()
-		log.Printf("Failed to unmarshall file")
+		log.Errorln("Failed to unmarshall file")
 		return "", bufio.NewReader(img), 0, 0, err
 	}
 	maxPat = len(pats)
@@ -122,12 +122,12 @@ func patError() (file io.Reader, errOut error) {
 		noPat = "404headpatnotfoundsohereisamatpat.png"
 		gvars.CFG.Section("bot").Key("noPat").SetValue(noPat)
 		gvars.CFG.SaveTo(gvars.ConfigFile)
-		log.Printf("noPat was not set, setting to default mattpat pat")
+		log.Errorln("noPat was not set, setting to default mattpat pat")
 	}
 	//log.Printf("HEADPAT IS BORKED RIP")
 	img, err := os.Open("data/images/" + noPat)
 	if err != nil {
-		log.Printf("AND MATTPAT IS MISSING :'(")
+		log.Errorln("AND MATTPAT IS MISSING :'(")
 		return nil, err
 	}
 	return bufio.NewReader(img), err
