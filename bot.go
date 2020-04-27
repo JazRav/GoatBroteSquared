@@ -44,7 +44,6 @@ func main() {
 		log.Println("Error starting Discord session: ", err)
 		return
 	}
-  gvars.Prefix = "<"
   cmdHandle.Load()
 	dg.AddHandler(ready)
 	dg.AddHandler(messageCreate)
