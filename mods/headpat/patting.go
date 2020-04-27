@@ -116,11 +116,11 @@ func headPat(setPatNum string) (url string, file io.Reader, patNum int, maxPat i
 }
 
 func patError() (file io.Reader, errOut error) {
-	noPat = gvars.CFG.Section("bot").Key("noPat").String()
-	noPatMessage = gvars.CFG.Section("bot").Key("noPatMessage").String()
+	noPat = gvars.CFG.Section("headpat").Key("noPat").String()
+	noPatMessage = gvars.CFG.Section("headpat").Key("noPatMessage").String()
 	if noPat == "" {
 		noPat = "404headpatnotfoundsohereisamatpat.png"
-		gvars.CFG.Section("bot").Key("noPat").SetValue(noPat)
+		gvars.CFG.Section("headpat").Key("noPat").SetValue(noPat)
 		gvars.CFG.SaveTo(gvars.ConfigFile)
 		log.Errorln("noPat was not set, setting to default mattpat pat")
 	}
