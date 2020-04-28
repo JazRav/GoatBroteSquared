@@ -77,7 +77,7 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
       meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/703720502795042987/meme_IS_THAT_A_JOJO_2.mp4"
     }
     case meme.Random == 300: {
-      meme.Type = "Meme Persona"
+      meme.Type = "Persona Contract Gained"
       meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704011280167600128/meme_persona.mp4"
     }
     case meme.Random == 333: {
@@ -94,6 +94,10 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
     case meme.Random == 900 : {
       meme.Type = "Memes of production stolen"
       meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704013328913268736/meme_production_stolen.mp4"
+    }
+    case meme.Random == 301: {
+    meme.Type = "Meme Approved"
+    meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704528203179360296/meme_persona_2.mp4"
     }
     //Ranges
 		case meme.Random > 0 && meme.Random < 334: {
