@@ -103,6 +103,22 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
       meme.Type = "Meme School Application Rejected"
       meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704573253594644520/meme_school_rejected.mp4"
     }
+    case meme.Random == 950: {
+      meme.Type = "Excellent"
+      meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704783336283045969/excellent_meme.mp4"
+    }
+    case meme.Random == 905: {
+      meme.Type = "Approuvé"
+      meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704783376288317540/meme_approuve.mp4"
+    }
+    case meme.Random == 350: {
+      meme.Type = "WHERE?!?!?"
+      meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704783388183232532/meme_where.mp4"
+    }
+    case meme.Random == 380: {
+      meme.Type = "Knuckles.exe has stopped responding"
+      meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704783460757274654/meme_knucks.exe_has_stopped_responding.mp4"
+    }
     //Ranges
 		case meme.Random > 0 && meme.Random < 334: {
 				meme.Type = "Approved"
