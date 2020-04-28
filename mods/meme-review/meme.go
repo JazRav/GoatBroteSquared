@@ -99,6 +99,10 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
     meme.Type = "Approved"
     meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704528203179360296/meme_persona_2.mp4"
     }
+    case meme.Random == 948: {
+      meme.Type = "Meme School Application Rejected"
+      meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704573253594644520/meme_school_rejected.mp4"
+    }
     //Ranges
 		case meme.Random > 0 && meme.Random < 334: {
 				meme.Type = "Approved"
