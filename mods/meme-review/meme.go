@@ -96,7 +96,7 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
       meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704013328913268736/meme_production_stolen.mp4"
     }
     case meme.Random == 301: {
-    meme.Type = "Meme Approved"
+    meme.Type = "Approved"
     meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704528203179360296/meme_persona_2.mp4"
     }
     //Ranges
