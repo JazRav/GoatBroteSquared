@@ -115,22 +115,31 @@ func E621Handler(search string, forceID bool, forcesearch string, nsfw bool, nol
 	eStuff.SoundWarning = false
 	for a := 0; a < len(e621s.Posts[numE621].Tags.Artist); a++ {
 		if e621s.Posts[numE621].Tags.Artist[a] == "sound_warning" {
+      e621s.Posts[numE621].Tags.Artist = append(e621s.Posts[numE621].Tags.Artist[:a], e621s.Posts[numE621].Tags.Artist[a+1:]...)
 			eStuff.SoundWarning = true
 		}
 	}
-	if len(e621s.Posts[numE621].Tags.Artist) == 1 {
+  switch {
+    case len(e621s.Posts[numE621].Tags.Artist) == 1: eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0]
+    case len(e621s.Posts[numE621].Tags.Artist) == 2: eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0] + ",\n" + e621s.Posts[numE621].Tags.Artist[1]
+    case len(e621s.Posts[numE621].Tags.Artist) > 2 : eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0] + ",\n**"+strconv.Itoa(len(e621s.Posts[numE621].Tags.Artist)-1) + "** ***more***"
+    default: eStuff.Artist = "unknown artist"
+  }
+	/* if len(e621s.Posts[numE621].Tags.Artist) == 1 {
 		eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0]
 	} else if len(e621s.Posts[numE621].Tags.Artist) == 2 {
 		if e621s.Posts[numE621].Tags.Artist[1] == "sound_warning" {
 			eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0]
 		} else {
-			eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0] + " & " + e621s.Posts[numE621].Tags.Artist[1]
+			eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0] + ",\n" + e621s.Posts[numE621].Tags.Artist[1]
 		}
 	} else if len(e621s.Posts[numE621].Tags.Artist) > 2 {
-		eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0] + " & "+strconv.Itoa(len(e621s.Posts[numE621].Tags.Artist)-1) + " more"
+		eStuff.Artist = e621s.Posts[numE621].Tags.Artist[0] + ",\n**"+strconv.Itoa(len(e621s.Posts[numE621].Tags.Artist)-1) + "** ***more***"
 	} else {
 		eStuff.Artist = "unknown artist"
 	}
+  */
+  eStuff.Artist = strings.Replace(eStuff.Artist, "_", " ", -1)
 	if len(e621s.Posts[numE621].Sources) > 0 {
 			eStuff.Source = e621s.Posts[numE621].Sources[0]
 	}

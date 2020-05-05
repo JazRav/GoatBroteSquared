@@ -181,9 +181,11 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 			e6ORe9 = nolewdmessage
 		}
 	}
+  bSource := false
 	if eStuff.Source != "" {
 		link = eStuff.Source
 		title = "Source"
+    bSource = true
 	} else {
 		link = eStuff.Page
 		title = ""
@@ -191,17 +193,25 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 	var imageEmbed discordgo.MessageEmbedImage
 	var videoEmbed discordgo.MessageEmbedVideo
 	var clickMessage string
-	if (eStuff.EXT == "webm") {
-		videoEmbed = discordgo.MessageEmbedVideo{
-			URL: eStuff.URL,
-		}
-	} else if (eStuff.EXT == "swf") {
-		clickMessage = "\n\nFile is SWF, please click Source or " + e6ORe9 + " to view"
-	} else {
-		imageEmbed = discordgo.MessageEmbedImage{
-			URL: eStuff.URL,
-		}
-	}
+  switch eStuff.EXT {
+    case "webm": {
+		    videoEmbed = discordgo.MessageEmbedVideo{
+			       URL: eStuff.URL,
+        }
+    }
+    case "swf": {
+        b := e6ORe9
+        if bSource {
+          b = title
+        }
+		    clickMessage = "\n\nFile is Flash, please click **" + b + "** to view"
+    }
+    default: {
+      imageEmbed = discordgo.MessageEmbedImage{
+      URL: eStuff.URL,
+      }
+    }
+  }
 	soundWarning := ""
 	if eStuff.SoundWarning {
 		soundWarning = "\n⚠WARNING SOUND MIGHT BE LOUD⚠"
