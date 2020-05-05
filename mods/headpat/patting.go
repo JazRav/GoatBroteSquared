@@ -54,11 +54,14 @@ func cmdPat(command []string, s *discordgo.Session, m *discordgo.MessageCreate) 
 	patBed := &discordgo.MessageEmbed{
 		Author:      &discordgo.MessageEmbedAuthor{},
 		Color:       0x00a0ff,
-		Description: patMessage,
+		//Description: patMessage,
 		Image: &discordgo.MessageEmbedImage{
 			URL: pat,
 		},
-		Title: "From Headp.at",
+		Footer: &discordgo.MessageEmbedFooter{
+			Text: patMessage,
+		},
+		Title: "Headp.at",
 		URL: "http://headp.at",
 	}
 	_, errbed := s.ChannelMessageSendEmbed(m.ChannelID, patBed)
