@@ -27,6 +27,7 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
   if len(message) == 1 || forceErr != nil {
   	meme.Random = rand.Intn(1000 - 0 + 1)
   }
+  meme.Color = 0x880000
 	switch {
     //Speical cases
 		case meme.Random == 0: {
@@ -109,11 +110,16 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
       meme.Type = "Knuckles.exe has stopped responding"
       meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/704783460757274654/meme_knucks.exe_has_stopped_responding.mp4"
     }
+    case meme.Random == 263: {
+      meme.Type = "Approved"
+      meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/706293462743384174/Kirby_Approved.mp4"
+      meme.Color = 0xffa6c9
+    }
     //Ranges
 		case meme.Random > 0 && meme.Random < 334: {
 				meme.Type = "Approved"
         rand.Seed(time.UnixNano())
-        randNum := rand.Intn(10 - 0 + 1)
+        randNum := rand.Intn(20 - 0 + 1)
         switch randNum {
           case 1: meme.URL = "https://cdn.discordapp.com/attachments/702153501480058890/703723341604716664/meme_approved_2.mp4"
           case 2: meme.URL =  "https://cdn.discordapp.com/attachments/614851241406627914/704020695469785228/meme_approved_3.mp4"
@@ -133,7 +139,7 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
 		URL: meme.URL,
 	}
 	memeReviewEmbed := &discordgo.MessageEmbed{
-		Color:       0x880000,
+		Color:       meme.Color,
 		Description: "",
 		Video: &videoEmbed,
 		Title:     meme.Type,
@@ -156,6 +162,7 @@ type memeReview struct {
 	Type string
 	Time string
 	Random int
+  Color int
 }
 type editMemeSt struct {
   Edit bool

@@ -206,19 +206,45 @@ func e621EmbedMessage(search string, idlookup bool, forcesearch string, nolewd b
 	if eStuff.SoundWarning {
 		soundWarning = "\n⚠WARNING SOUND MIGHT BE LOUD⚠"
 	}
+  rating := "unknown"
+  switch eStuff.Rating {
+    case "s": rating = "Safe"
+    case "q": rating = "Questionable"
+    case "e": rating = "Explicit"
+  }
 	if eStuff.Page != "" {
 		e621embed := &discordgo.MessageEmbed{
 			Color:       0x0055ff,
-			Description: "Artist: " + eStuff.Artist + "\nRating: " + eStuff.Rating + " Score: " + strconv.Itoa(eStuff.Score) + "\nID: " + strconv.Itoa(eStuff.ID) +clickMessage+soundWarning,
+			Description: clickMessage+soundWarning,
 			URL:         link,
 			Author: &discordgo.MessageEmbedAuthor{
 				URL:     eStuff.Page,
 				Name:    e6ORe9,
 				IconURL: "https://i.imgur.com/dbKpPIs.png",
 			},
+      Fields: []*discordgo.MessageEmbedField{
+      &discordgo.MessageEmbedField{
+          Name:    "Artist",
+          Value:  eStuff.Artist,
+          Inline: true,
+      },
+      &discordgo.MessageEmbedField{
+          Name:   "Rating",
+          Value:  rating,
+          Inline: true,
+      },
+      &discordgo.MessageEmbedField{
+          Name:   "Score",
+          Value:  strconv.Itoa(eStuff.Score),
+          Inline: true,
+      },
+    },
 			Image: &imageEmbed,
 			Video: &videoEmbed,
 			Title:     title,
+      Footer: &discordgo.MessageEmbedFooter{
+        Text: "ID: " + strconv.Itoa(eStuff.ID),
+      },
 			Timestamp: eStuff.TimeStamp,
 		}
 		s.ChannelMessageSendEmbed(m.ChannelID, e621embed)
