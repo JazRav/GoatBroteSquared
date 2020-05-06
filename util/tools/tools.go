@@ -6,9 +6,22 @@ import (
   "net/http"
 	"io/ioutil"
   "encoding/base64"
+  "time"
 
   "github.com/dokvis/goatbrotesquared/util/gvars"
 )
+//StartTime - time of bot start
+var StartTime time.Time
+
+//StartTheTimer - Starts the timer
+func StartTheTimer() {
+  //StartTime - Time the bot started
+  StartTime = time.Now()
+}
+//Uptime - How long the bot been up
+func Uptime() time.Duration {
+    return time.Since(StartTime).Round(time.Second)
+}
 //DirExists - Checks if dir exists
 func DirExists(path string) (exists bool, dirErr error) {
 	_, err := os.Stat(path)

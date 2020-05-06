@@ -199,7 +199,7 @@ func cmdVersion(message []string, s *discordgo.Session, m *discordgo.MessageCrea
       Title:      "Github",
       URL: "https://github.com/DokVis/GoatBroteSquared",
       Footer: &discordgo.MessageEmbedFooter{
-        Text: "Bot by Dok#3678",
+        Text: "Bot by Dok#3678 | Uptime: " + tools.Uptime().String(),
       },
       Fields: []*discordgo.MessageEmbedField{
       &discordgo.MessageEmbedField{

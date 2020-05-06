@@ -19,9 +19,12 @@ import (
   "github.com/dokvis/goatbrotesquared/util/gvars"
   "github.com/dokvis/goatbrotesquared/util/gini"
   "github.com/dokvis/goatbrotesquared/util/guildini"
+	"github.com/dokvis/goatbrotesquared/util/tools"
 	"github.com/dokvis/goatbrotesquared/util/tools/discord"
 )
 func main() {
+	//Starts uptime shit
+	tools.StartTheTimer()
 	consoleFormat()
 	verInfoSet()
   CFGFile := flag.String("c", "", "Config file name")
