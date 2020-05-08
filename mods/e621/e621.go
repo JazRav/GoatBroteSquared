@@ -347,6 +347,6 @@ func loadINI(){
 //Protect the goat
 func ralseiAntiLewd() string{
 	rand.Seed(time.Now().UnixNano())
-	ralseiNoLewd := []string{"1700281" , "1874162", "2031072", "2064695"}
+	ralseiNoLewd := []string{"1700281" , "2234990", "2031072", "2064695"}
 	return ralseiNoLewd[rand.Intn(len(ralseiNoLewd))]
 }
