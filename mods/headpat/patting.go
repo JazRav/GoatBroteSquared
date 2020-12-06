@@ -16,7 +16,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 
-  "github.com/dokvis/goatbrotesquared/util/gvars"
+  "github.com/ashfennix/goatbrotesquared/util/gvars"
 )
 
 func cmdPat(command []string, s *discordgo.Session, m *discordgo.MessageCreate) {

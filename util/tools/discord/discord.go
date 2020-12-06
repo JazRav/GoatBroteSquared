@@ -6,7 +6,7 @@ import (
   "strconv"
   "github.com/bwmarrin/discordgo"
   	log "github.com/Sirupsen/logrus"
-  "github.com/dokvis/goatbrotesquared/util/tools"
+  "github.com/ashfennix/goatbrotesquared/util/tools"
 )
 
 //ChangeStatus - Changes status of Discord bot

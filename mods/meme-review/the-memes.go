@@ -28,7 +28,7 @@ func cmdMemeReview(message []string, s *discordgo.Session, m *discordgo.MessageC
   	meme.Random = rand.Intn(1000 - 0 + 1)
   }
   meme.Color = 0x880000
-	switch {
+	switch meme.Random {
     //Speical cases
 		case meme.Random == 0: {
 			meme.Type = "ERROR"

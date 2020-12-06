@@ -1,19 +1,21 @@
 package manage
 
 import (
+    "bytes"
     "strconv"
     "strings"
     "sort"
+    "os/exec"
 
     log "github.com/Sirupsen/logrus"
     "github.com/bwmarrin/discordgo"
     "github.com/go-ini/ini"
 
 
-    "github.com/dokvis/goatbrotesquared/cmd"
-    "github.com/dokvis/goatbrotesquared/util/gvars"
-    "github.com/dokvis/goatbrotesquared/util/tools"
-    "github.com/dokvis/goatbrotesquared/util/tools/discord"
+    "github.com/ashfennix/goatbrotesquared/cmd"
+    "github.com/ashfennix/goatbrotesquared/util/gvars"
+    "github.com/ashfennix/goatbrotesquared/util/tools"
+    "github.com/ashfennix/goatbrotesquared/util/tools/discord"
 )
 
 //Load - Loads the Management plugin
@@ -32,6 +34,7 @@ func Load() {
   cmd.Make("about", "Info", cmdVersion).HelpText("gets version infomation of bot").Add()
   cmd.Make("help", "Info", cmdHelp).HelpText("i dunno what this does").Add()
   cmd.Make("owner", "Info", cmdOwnerTag).HelpText("Pings owner").Add()
+  cmd.Make("IP", "Info", cmdGetIP).HelpText("Shows IP of bot").Owner().Add()
 }
 
 func cmdDevModeToggle(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -65,7 +68,12 @@ func cmdLogModeToggle(message []string, s *discordgo.Session, m *discordgo.Messa
 	}
 }
 func cmdGuildList(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
-	guildIDLen := len(gvars.GuildID)
+  //Quick check to see if shit is broken or not
+  if len(gvars.GuildID) == 0{
+    s.ChannelMessageSend(m.ChannelID, "ENABLE SHIT YOU FUCK")
+    return
+  }
+  guildIDLen := len(gvars.GuildID)
 	msg := ""
 	var guild *discordgo.Guild
 	var err error
@@ -199,7 +207,7 @@ func cmdVersion(message []string, s *discordgo.Session, m *discordgo.MessageCrea
       Title:      "Github",
       URL: "https://github.com/DokVis/GoatBroteSquared",
       Footer: &discordgo.MessageEmbedFooter{
-        Text: "Bot by Dok#3678 | Uptime: " + tools.Uptime().String(),
+        Text: "Bot by AshFennix#4043 | Uptime: " + tools.Uptime().String(),
       },
       Fields: []*discordgo.MessageEmbedField{
       &discordgo.MessageEmbedField{
@@ -234,6 +242,12 @@ func cmdVersion(message []string, s *discordgo.Session, m *discordgo.MessageCrea
       },
     },
   })
+}
+
+func cmdGetIP(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+  if m.Author.ID == gvars.Owner {
+    s.ChannelMessageSend(m.ChannelID, "Current IP is: `" + getIP()+"`")
+  }
 }
 
 func cmdOwnerTag(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -290,4 +304,25 @@ func cmdHelp(message []string, s *discordgo.Session, m *discordgo.MessageCreate)
 		log.Errorln("Help Embed Error: " + err.Error())
 	}
 
+}
+
+func getIP() string {
+  ip, err := http.Get("https://headp.at/js/pats.json")
+ 	if err != nil {
+ 		log.Errorln("Failed to get IP")
+ 		return err.Error()
+ 	}
+ 	defer ip.Body.Close()
+ /*
+ cmd := exec.Command("curl")
+ cmd.Stdin = strings.NewReader("http://ipecho.net/plain")
+ var out bytes.Buffer
+ cmd.Stdout = &out
+ err := cmd.Run()
+ if err != nil {
+   log.Error("Failed to get IP with: " + err.Error() )
+   return err.Error()
+ }
+ return out.String()
+ */
 }

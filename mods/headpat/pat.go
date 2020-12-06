@@ -3,8 +3,8 @@ package pat
 import (
 	log "github.com/Sirupsen/logrus"
 
-  "github.com/dokvis/goatbrotesquared/cmd"
-  "github.com/dokvis/goatbrotesquared/util/gvars"
+  "github.com/ashfennix/goatbrotesquared/cmd"
+  "github.com/ashfennix/goatbrotesquared/util/gvars"
 )
 
 //Load - Headpat loader

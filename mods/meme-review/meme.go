@@ -3,7 +3,7 @@ package memereview
 import (
   log "github.com/Sirupsen/logrus"
 
-  "github.com/dokvis/goatbrotesquared/cmd"
+  "github.com/ashfennix/goatbrotesquared/cmd"
 )
 
 //Load - Loads meme review

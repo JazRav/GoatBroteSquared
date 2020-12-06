@@ -11,10 +11,10 @@ import (
   "github.com/bwmarrin/discordgo"
 
   //Project
-  "github.com/dokvis/goatbrotesquared/cmd"
-  "github.com/dokvis/goatbrotesquared/util/gvars"
+  "github.com/ashfennix/goatbrotesquared/cmd"
+  "github.com/ashfennix/goatbrotesquared/util/gvars"
 
-  "github.com/dokvis/goatbrotesquared/mods/e621/handler"
+  "github.com/ashfennix/goatbrotesquared/mods/e621/handler"
 )
 //Load - Loads mod
 func Load(){

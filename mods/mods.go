@@ -5,12 +5,14 @@ import (
    log "github.com/Sirupsen/logrus"
 
   //Project
-  //"github.com/dokvis/goatbrotesquared/mods/helloworld"
-  "github.com/dokvis/goatbrotesquared/mods/e621"
-  "github.com/dokvis/goatbrotesquared/mods/twitter"
-  "github.com/dokvis/goatbrotesquared/mods/meme-review"
-  "github.com/dokvis/goatbrotesquared/mods/headpat"
-  "github.com/dokvis/goatbrotesquared/mods/botmanagement"
+  //"github.com/ashfennix/goatbrotesquared/mods/helloworld"
+  "github.com/ashfennix/goatbrotesquared/mods/e621"
+  "github.com/ashfennix/goatbrotesquared/mods/twitter"
+  "github.com/ashfennix/goatbrotesquared/mods/meme-review"
+  "github.com/ashfennix/goatbrotesquared/mods/headpat"
+  "github.com/ashfennix/goatbrotesquared/mods/botmanagement"
+  "github.com/ashfennix/goatbrotesquared/mods/roleman"
+  "github.com/ashfennix/goatbrotesquared/mods/swebclone"
 )
 
 //Load = Loads mods listed
@@ -22,4 +24,6 @@ func Load(){
     memereview.Load()
     pat.Load()
     manage.Load()
+    roleman.Load()
+    sweb.Load()
 }

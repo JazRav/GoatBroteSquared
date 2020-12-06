@@ -6,7 +6,7 @@ import (
   log "github.com/Sirupsen/logrus"
 
   //Project
-  "github.com/dokvis/goatbrotesquared/cmd"
+  "github.com/ashfennix/goatbrotesquared/cmd"
 )
 
 func Load() {

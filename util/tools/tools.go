@@ -8,7 +8,7 @@ import (
   "encoding/base64"
   "time"
 
-  "github.com/dokvis/goatbrotesquared/util/gvars"
+  "github.com/ashfennix/goatbrotesquared/util/gvars"
 )
 //StartTime - time of bot start
 var StartTime time.Time

@@ -15,12 +15,12 @@ import (
 	"github.com/bwmarrin/discordgo"
 
   //Project
-  "github.com/dokvis/goatbrotesquared/cmd/handler"
-  "github.com/dokvis/goatbrotesquared/util/gvars"
-  "github.com/dokvis/goatbrotesquared/util/gini"
-  "github.com/dokvis/goatbrotesquared/util/guildini"
-	"github.com/dokvis/goatbrotesquared/util/tools"
-	"github.com/dokvis/goatbrotesquared/util/tools/discord"
+  "github.com/ashfennix/goatbrotesquared/cmd/handler"
+  "github.com/ashfennix/goatbrotesquared/util/gvars"
+  "github.com/ashfennix/goatbrotesquared/util/gini"
+  "github.com/ashfennix/goatbrotesquared/util/guildini"
+	"github.com/ashfennix/goatbrotesquared/util/tools"
+	"github.com/ashfennix/goatbrotesquared/util/tools/discord"
 )
 func main() {
 	//Starts uptime shit

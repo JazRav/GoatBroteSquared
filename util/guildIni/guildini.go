@@ -1,8 +1,8 @@
 package guildINI
 
 import (
-  "github.com/dokvis/goatbrotesquared/util/tools"
-  "github.com/dokvis/goatbrotesquared/util/gvars"
+  "github.com/ashfennix/goatbrotesquared/util/tools"
+  "github.com/ashfennix/goatbrotesquared/util/gvars"
 )
 
 //MakeGuildIni - Makes the ini for the guild

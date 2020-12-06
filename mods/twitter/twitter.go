@@ -4,9 +4,9 @@ import (
   log "github.com/Sirupsen/logrus"
   "github.com/go-ini/ini"
 
-  "github.com/dokvis/goatbrotesquared/cmd"
-	"github.com/dokvis/goatbrotesquared/mods/twitter/handler"
-  "github.com/dokvis/goatbrotesquared/util/gvars"
+  "github.com/ashfennix/goatbrotesquared/cmd"
+	"github.com/ashfennix/goatbrotesquared/mods/twitter/handler"
+  "github.com/ashfennix/goatbrotesquared/util/gvars"
 )
 
 //Load - Twitter Plugin

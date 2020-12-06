@@ -13,9 +13,9 @@ import (
   log "github.com/Sirupsen/logrus"
 	 "github.com/go-ini/ini"
 
-	"github.com/dokvis/goatbrotesquared/util/gvars"
-	"github.com/dokvis/goatbrotesquared/util/tools"
-	"github.com/dokvis/goatbrotesquared/mods/twitter/handler"
+	"github.com/ashfennix/goatbrotesquared/util/gvars"
+	"github.com/ashfennix/goatbrotesquared/util/tools"
+	"github.com/ashfennix/goatbrotesquared/mods/twitter/handler"
 )
 
 func cmdTwitMassFollow(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -141,6 +141,10 @@ func cmdTwitRemoveChan(message []string, s *discordgo.Session, m *discordgo.Mess
 
 }
 
+func cmdTwitReply(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
+
+}
+
 func cmdTwitForAll(message []string, s *discordgo.Session, m *discordgo.MessageCreate) {
 	if forAll == false {
 		forAll = true
@@ -209,6 +213,14 @@ func cmdTweet(message []string, s *discordgo.Session, m *discordgo.MessageCreate
   } else {
     urlink, err = twit.Tweet(status, nil)
   }
+	if len(message) > 3 {
+		if message[len(message)-2] = "-r" {
+			status := strings.TrimPrefix(m.Content, message[0])
+			status = strings.Replace(status, "`", "", -1)
+			status = strings.TrimSuffix(m.Content, "-r " + message[len(message)-1])
+			v.Set("InReplyToStatusID")
+		}
+	}
 
 
   if err != nil {

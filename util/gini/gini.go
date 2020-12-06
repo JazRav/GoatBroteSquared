@@ -4,7 +4,7 @@ import (
   "github.com/go-ini/ini"
   log "github.com/Sirupsen/logrus"
 
-  "github.com/dokvis/goatbrotesquared/util/gvars"
+  "github.com/ashfennix/goatbrotesquared/util/gvars"
 )
 //Init - Starts global
 func Init() (initErr error){

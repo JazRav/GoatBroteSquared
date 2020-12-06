@@ -9,9 +9,9 @@ import (
   log "github.com/Sirupsen/logrus"
 
   //Project
-  "github.com/dokvis/goatbrotesquared/cmd"
-  "github.com/dokvis/goatbrotesquared/mods"
-  "github.com/dokvis/goatbrotesquared/util/gvars"
+  "github.com/ashfennix/goatbrotesquared/cmd"
+  "github.com/ashfennix/goatbrotesquared/mods"
+  "github.com/ashfennix/goatbrotesquared/util/gvars"
 )
 //Load - Loads the command handler
 func Load(){
